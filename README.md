@@ -1,4 +1,4 @@
-# 📺 Albus IPTV — Free M3U Playlists
+# 📺 IPTV — Free M3U Playlists
 
 > 🌐 **Landing page:** [https://albus-percival.github.io/iptv/](https://albus-percival.github.io/iptv/)
 
