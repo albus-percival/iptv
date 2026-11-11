@@ -23,7 +23,7 @@ Per-playlist stats live in [`All-Channels.stats.json`](All-Channels.stats.json) 
 ## Usage
 
 1. Copy a playlist URL above.
-2. Open your IPTV player (VLC, TiviMate, Kodi, IPTV Smarters, mpv — anything M3U-capable) and add it as a remote playlist, e.g. `vlc https://albus-percival.github.io/iptv/Eng-Hin.m3u`.
+2. Open your IPTV player ([VLC](https://www.videolan.org/vlc/), [Hashtag IPTV](https://app.hashtagiptv.com/) (Web Player), [TiviMate](https://tivimate.com/) (Android TV), [Kodi](https://kodi.tv/), [mpv](https://mpv.io/) — anything M3U-capable) and add it as a remote playlist, e.g. `vlc https://albus-percival.github.io/iptv/Eng-Hin.m3u`.
 3. Browse by category groups and watch. If a stream is down, try its duplicate entry.
 
 ## Credits
