@@ -1,6 +1,6 @@
 {
 	"date": "[12-Nov-2026]",
-	"generatedAt": "2026-11-11T19:22:02.645Z",
+	"generatedAt": "2026-11-11T22:52:37.085Z",
 	"entries": 19347,
 	"channels": 11963,
 	"streams": 18394,
@@ -40,6 +40,8 @@
 		"Legislative · HD": 6,
 		"Lifestyle": 204,
 		"Lifestyle · HD": 11,
+		"Mature": 1,
+		"Mature · HD": 2,
 		"Movies": 912,
 		"Movies · HD": 98,
 		"Music": 987,
@@ -72,8 +74,6 @@
 		"Uncategorized · HD": 124,
 		"Uncategorized · UHD": 1,
 		"Weather": 26,
-		"Weather · HD": 1,
-		"XXX": 1,
-		"XXX · HD": 2
+		"Weather · HD": 1
 	}
 }
