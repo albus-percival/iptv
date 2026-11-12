@@ -15,7 +15,7 @@ echo %CYAN%=== 1. Checking current status ===%RESET%
 git status
 echo.
 
-:: Check if git status output contains "nothing to commit"
+:: Check if git status output contains changes
 git status --porcelain > "%TEMP%\git_status_check.tmp"
 set /p GIT_STATUS_OUTPUT=<"%TEMP%\git_status_check.tmp"
 del "%TEMP%\git_status_check.tmp" 2>nul
@@ -57,23 +57,23 @@ set /p "CUSTOM_MSG=%YELLOW%Enter custom commit message (Leave blank to use defau
 
 if not "%CUSTOM_MSG%"=="" (
     set "FINAL_MSG=%CUSTOM_MSG%"
+    
+    echo.
+    echo %CYAN%=== Final Preview ===%RESET%
+    echo %YELLOW%  git add -A%RESET%
+    echo %YELLOW%  git commit -m "!FINAL_MSG!"%RESET%
+    echo %YELLOW%  git push%RESET%
+    echo.
+
+    set "confirm=n"
+    set /p "confirm=%YELLOW%Proceed with these final commands? (y/N): %RESET%"
+
+    if /i "!confirm!" neq "y" (
+        echo %RED%Aborted by user.%RESET%
+        goto :end
+    )
 ) else (
     set "FINAL_MSG=%DEFAULT_MSG%"
-)
-
-echo.
-echo %CYAN%=== Final Preview ===%RESET%
-echo %YELLOW%  git add -A%RESET%
-echo %YELLOW%  git commit -m "%FINAL_MSG%"%RESET%
-echo %YELLOW%  git push%RESET%
-echo.
-
-set "confirm=n"
-set /p "confirm=%YELLOW%Proceed with these final commands? (y/N): %RESET%"
-
-if /i "%confirm%" neq "y" (
-    echo %RED%Aborted by user.%RESET%
-    goto :end
 )
 
 echo.
