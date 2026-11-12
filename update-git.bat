@@ -15,23 +15,18 @@ echo %CYAN%=== 1. Checking current status ===%RESET%
 git status
 echo.
 
-:: Check if git status output contains changes
-git status --porcelain > "%TEMP%\git_status_check.tmp"
-set /p GIT_STATUS_OUTPUT=<"%TEMP%\git_status_check.tmp"
-del "%TEMP%\git_status_check.tmp" 2>nul
-
-if "%GIT_STATUS_OUTPUT%"=="" (
-    echo %YELLOW%No changes detected. Working tree is clean.%RESET%
-    goto :end
+:: Check if git status has any changes using porcelain (cleanly parses output)
+set "HAS_CHANGES="
+for /f "delims=" %%i in ('git status --porcelain') do (
+    set "HAS_CHANGES=1"
 )
+
+if not defined HAS_CHANGES goto :clean_exit
 
 echo %CYAN%=== 2. Extracting timestamp from All-Channels.stats.json ===%RESET%
 for /f "delims=" %%i in ('powershell -NoProfile -Command "$json = Get-Content 'All-Channels.stats.json' -Raw | ConvertFrom-Json; $date = [DateTime]::Parse($json.generatedAt); $date.ToString('dd-MMM-yyyy hh:mm:ss tt')"') do set "COMMIT_TIME=%%i"
 
-if "%COMMIT_TIME%"=="" (
-    echo %RED%Error: Could not extract 'generatedAt' from All-Channels.stats.json! Aborting.%RESET%
-    goto :end
-)
+if "%COMMIT_TIME%"=="" goto :time_error
 
 echo %GREEN%Successfully extracted timestamp:%RESET% %WHITE%%COMMIT_TIME%%RESET%
 echo.
@@ -44,17 +39,15 @@ echo %YELLOW%  git commit -m "%DEFAULT_MSG%"%RESET%
 echo.
 
 set "choice=n"
-set /p "choice=%YELLOW%Do you want to proceed with commit and push? (y/N): %RESET%"
+set /p "choice=%YELLOW%Do you want to proceed with commit and push? (y/N): %RESET% "
 
-if /i "%choice%" neq "y" (
-    echo %RED%Aborted by user.%RESET%
-    goto :end
-)
+if /i "%choice%" neq "y" goto :user_abort
 
 echo.
 set "CUSTOM_MSG="
-set /p "CUSTOM_MSG=%YELLOW%Enter custom commit message (Leave blank to use default): %RESET%"
+set /p "CUSTOM_MSG=%YELLOW%Enter custom commit message (Leave blank to use default): %RESET% "
 
+if "%CUSTOM_MSG%"=="" set "FINAL_MSG=%DEFAULT_MSG%"
 if not "%CUSTOM_MSG%"=="" (
     set "FINAL_MSG=%CUSTOM_MSG%"
     
@@ -66,14 +59,9 @@ if not "%CUSTOM_MSG%"=="" (
     echo.
 
     set "confirm=n"
-    set /p "confirm=%YELLOW%Proceed with these final commands? (y/N): %RESET%"
+    set /p "confirm=%YELLOW%Proceed with these final commands? (y/N): %RESET% "
 
-    if /i "!confirm!" neq "y" (
-        echo %RED%Aborted by user.%RESET%
-        goto :end
-    )
-) else (
-    set "FINAL_MSG=%DEFAULT_MSG%"
+    if /i "!confirm!" neq "y" goto :user_abort
 )
 
 echo.
@@ -88,8 +76,22 @@ git push
 echo.
 echo %CYAN%=== 5. Final status ===%RESET%
 git status
+goto :end
+
+:clean_exit
+echo %YELLOW%No changes detected. Working tree is clean.%RESET%
+goto :end
+
+:time_error
+echo %RED%Error: Could not extract 'generatedAt' from All-Channels.stats.json! Aborting.%RESET%
+goto :end
+
+:user_abort
+echo %RED%Aborted by user.%RESET%
+goto :end
 
 :end
 echo.
 echo %WHITE%Press any key to exit . . .%RESET%
 pause >nul
+@echo on
