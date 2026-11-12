@@ -28,6 +28,7 @@ Open one of these playlists straight into the previewer:
 
 - [Preview All-Channels.m3u](https://albus-percival.github.io/iptv/m3u-previewer.html?open=https://albus-percival.github.io/iptv/All-Channels.m3u)
 - [Preview Eng-Hin.m3u](https://albus-percival.github.io/iptv/m3u-previewer.html?open=https://albus-percival.github.io/iptv/Eng-Hin.m3u)
+- [Preview iptv-org index.m3u (upstream)](https://albus-percival.github.io/iptv/m3u-previewer.html?open=https://iptv-org.github.io/iptv/index.m3u)
 
 Any playlist URL can be auto-loaded this way with the `open` query parameter, e.g. `https://albus-percival.github.io/iptv/m3u-previewer.html?open=https://example.com/playlist.m3u`.
 
