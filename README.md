@@ -8,8 +8,8 @@ Free **M3U playlists** of publicly available live TV streams. No sign-up, no fee
 
 | Playlist | Description |
 |----------|-------------|
-| [`All-Channels.m3u`](All-Channels.m3u) | Every channel from every region and language. |
-| [`Eng-Hin.m3u`](Eng-Hin.m3u) | Curated English & Hindi channels. |
+| [`All-Channels.m3u`](https://albus-percival.github.io/iptv/All-Channels.m3u) | Every channel from every region and language. |
+| [`Eng-Hin.m3u`](https://albus-percival.github.io/iptv/Eng-Hin.m3u) | Curated English & Hindi channels. |
 
 Playlist URLs (always load the latest version):
 
