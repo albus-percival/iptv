@@ -20,6 +20,17 @@ https://albus-percival.github.io/iptv/Eng-Hin.m3u
 
 Per-playlist stats live in [`All-Channels.stats.json`](All-Channels.stats.json) and [`Eng-Hin.stats.json`](Eng-Hin.stats.json), and are shown on the [landing page](https://albus-percival.github.io/iptv/).
 
+## Preview
+
+Peek inside a playlist in your browser before adding it to a player with the [M3U Previewer](https://albus-percival.github.io/iptv/m3u-previewer.html) — a fully client-side viewer with global search, per-column filters, sorting and dark mode. Playlists are parsed entirely in the browser; nothing is uploaded anywhere.
+
+Open one of these playlists straight into the previewer:
+
+- [Preview All-Channels.m3u](https://albus-percival.github.io/iptv/m3u-previewer.html?open=https://albus-percival.github.io/iptv/All-Channels.m3u)
+- [Preview Eng-Hin.m3u](https://albus-percival.github.io/iptv/m3u-previewer.html?open=https://albus-percival.github.io/iptv/Eng-Hin.m3u)
+
+Any playlist URL can be auto-loaded this way with the `open` query parameter, e.g. `https://albus-percival.github.io/iptv/m3u-previewer.html?open=https://example.com/playlist.m3u`.
+
 ## Usage
 
 1. Copy a playlist URL above.

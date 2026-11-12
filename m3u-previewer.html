@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M3U Previewer</title>
+<script>
+  /* Apply saved theme before first paint to avoid flash */
+  try {
+    var t = localStorage.getItem("m3u-preview-theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<style>
+  :root {
+    --bg: #f5f6f8; --panel: #ffffff; --text: #1e2430; --muted: #68707e;
+    --border: #e2e5ea; --hover: #f0f3f8; --accent: #2563eb; --accent-soft: #e8effd;
+  }
+  html[data-theme="dark"] {
+    --bg: #0f1318; --panel: #171c23; --text: #e6eaf0; --muted: #98a1b0;
+    --border: #272e38; --hover: #1d242e; --accent: #5da2ff; --accent-soft: #1d2a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  /* Dynamic viewport units: avoid the iOS/Android address-bar height jump */
+  @supports (height: 100dvh) { html, body { height: 100dvh; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column;
+  }
+  button {
+    font: inherit; color: inherit; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 14px; cursor: pointer; white-space: nowrap;
+  }
+  button:hover { background: var(--hover); border-color: var(--accent); }
+
+  #controls {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 10px 16px;
+    background: var(--panel); border-bottom: 1px solid var(--border);
+  }
+  #controls .spacer { flex: 1; }
+  .searchbox { display: flex; align-items: center; gap: 8px; }
+  #search {
+    flex: 0 1 340px; min-width: 140px; max-width: 420px; padding: 7px 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: var(--bg); color: var(--text); outline: none;
+  }
+  #search:focus { border-color: var(--accent); }
+  .searchbox :disabled { opacity: .55; cursor: default; }
+  #searchClose { padding: 7px 10px; }
+  #searchClose[hidden] { display: none; }
+  #clearFiltersBtn { padding: 7px 10px; font-size: 13px; }
+  #clearFiltersBtn[hidden] { display: none; }
+  #stats { color: var(--muted); font-size: 12.5px; }
+
+  #wrap { flex: 1; overflow: auto; padding: 0 16px 24px; display: flex; flex-direction: column; }
+
+  table { border-collapse: collapse; width: 100%; margin-top: 12px; table-layout: fixed; }
+  thead th {
+    position: sticky; top: 0; z-index: 1; background: var(--panel); text-align: left;
+    padding: 7px 10px 8px; border-bottom: 2px solid var(--border); font-size: 12px;
+    text-transform: uppercase; letter-spacing: .04em; color: var(--muted); white-space: nowrap;
+    overflow: hidden;
+  }
+  /* Column resize handle: thin strip on the header's right edge */
+  .col-handle {
+    position: absolute; top: 0; right: 0; width: 8px; height: 100%;
+    cursor: col-resize; user-select: none; touch-action: none;
+  }
+  .col-handle::after {
+    content: ""; display: block; margin: 4px auto 0; width: 2px; height: calc(100% - 8px);
+    background: transparent; border-radius: 2px;
+  }
+  th:hover .col-handle::after, body.col-resizing th .col-handle::after { background: var(--accent); opacity: .45; }
+  body.col-resizing { cursor: col-resize; user-select: none; }
+  .th-title { cursor: pointer; user-select: none; }
+  .th-title::after { content: "\21C5"; margin-left: 6px; opacity: .5; }
+  /* Logo column: centered to match its cells; no sort icon (column is not sortable) */
+  th.th-logo { text-align: center; }
+  th[aria-sort="ascending"] .th-title::after  { content: "\25B2"; opacity: 1; color: var(--accent); }
+  th[aria-sort="descending"] .th-title::after { content: "\25BC"; opacity: 1; color: var(--accent); }
+  /* th's sticky positioning already creates a containing block for the handle */
+  .col-filter {
+    display: block; width: 100%; margin-top: 5px; padding: 3px 7px;
+    font: 12px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    text-transform: none; letter-spacing: normal;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg); color: var(--text); outline: none;
+  }
+  .col-filter::placeholder { color: var(--muted); }
+  .col-filter:focus { border-color: var(--accent); }
+  .col-filter.active { border-color: var(--accent); background: var(--accent-soft); }
+  .col-filter:disabled { opacity: .55; }
+
+  /* Fixed layout: every cell clips with an ellipsis; widths come from <colgroup> */
+  tbody td {
+    padding: 6px 12px; border-bottom: 1px solid var(--border); vertical-align: middle;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  tbody tr:hover { background: var(--hover); }
+  td.cell-id    { color: var(--muted); }
+  td.cell-name  { font-weight: 500; }
+  td.cell-group { color: var(--muted); }
+  td.cell-country, td.cell-language { color: var(--muted); }
+  td.cell-url {
+    font-family: Consolas, "SF Mono", Menlo, monospace; font-size: 12px;
+    color: var(--muted); cursor: pointer;
+  }
+  td.cell-url:hover { color: var(--accent); }
+  td.cell-logo  { text-align: center; }
+  .cell-logo img { max-height: 24px; max-width: 72px; vertical-align: middle; }
+  .nologo { color: var(--border); font-weight: 700; }
+
+  /* Virtualized rows: fixed row height (kept in sync with ROW_H in the script);
+     spacer rows carry no padding/border so their height is exact */
+  tbody tr.vrow td { height: 36px; }
+  tbody tr.vpad td { padding: 0; border-bottom: 0; overflow: hidden; }
+  tbody tr.nomatch td { text-align: center; padding: 26px 12px; color: var(--muted); border-bottom: 0; }
+
+  #toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(10px);
+    background: var(--panel); border: 1px solid var(--accent); color: var(--text);
+    padding: 8px 16px; border-radius: 8px; font-size: 13px;
+    opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease;
+    z-index: 20; box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Dialogs ("Open from URL", "Help / About") */
+  dialog {
+    background: var(--panel); color: var(--text); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0; width: min(480px, calc(100vw - 40px));
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .3);
+    max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow: auto;
+  }
+  dialog:not([open]) { display: none; }
+  dialog::backdrop { background: rgba(0, 0, 0, .45); }
+  #urlDialog form { padding: 18px; }
+  #urlDialog h3 { margin: 0 0 6px; font-size: 15px; }
+  #urlDialog .hint { margin: 0 0 12px; color: var(--muted); font-size: 12.5px; }
+  #urlInput {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--bg); color: var(--text); outline: none;
+  }
+  #urlInput:focus { border-color: var(--accent); }
+  #urlDialog menu { display: flex; justify-content: flex-end; gap: 8px; margin: 16px 0 0; padding: 0; }
+  #urlOk { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  #urlOk:hover { background: var(--accent); filter: brightness(1.08); }
+
+  /* "Help / About" dialog */
+  #helpDialog { width: min(780px, calc(100vw - 40px)); }
+  #helpDialog h3 { margin: 0; padding: 20px 24px 0; font-size: 17px; }
+  #helpDialog .help-body {
+    padding: 8px 24px 12px; max-height: min(75vh, 700px); overflow: auto;
+    font-size: 15px; line-height: 1.65;
+  }
+  #helpDialog h4 {
+    margin: 22px 0 10px; padding-bottom: 5px; border-bottom: 1px solid var(--border);
+    font-size: 13px; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--muted);
+  }
+  #helpDialog p { margin: 0 0 10px; }
+  #helpDialog ul { margin: 0 0 10px; padding-left: 22px; }
+  #helpDialog li { margin: 5px 0; }
+  #helpDialog code {
+    font-family: Consolas, "SF Mono", Menlo, monospace; font-size: 13px;
+    background: var(--hover); border: 1px solid var(--border); border-radius: 4px;
+    padding: 2px 6px; word-break: break-all;
+  }
+  #helpDialog .help-example {
+    display: block; margin: 8px 0 10px; padding: 10px 12px;
+    font-family: Consolas, "SF Mono", Menlo, monospace; font-size: 13px; line-height: 1.5;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    word-break: break-all;
+  }
+  #helpDialog kbd { font-size: 12px; padding: 1px 6px; }
+  #helpDialog footer {
+    padding: 14px 24px 20px; display: flex; justify-content: flex-end;
+    border-top: 1px solid var(--border); margin-top: 6px;
+  }
+
+  #empty { margin: auto; text-align: center; color: var(--muted); padding: 80px 20px; }
+  #empty .big { font-size: 38px; }
+  #empty button { margin: 16px auto 0; }
+
+  body.dragging::after {
+    content: "Drop .m3u / .m3u8 file or playlist URL to open";
+    position: fixed; inset: 0; z-index: 5; display: flex; align-items: center;
+    justify-content: center; font-size: 20px; font-weight: 600; color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+    outline: 3px dashed var(--accent); outline-offset: -12px;
+  }
+  kbd { border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; font-size: 11px; background: var(--hover); }
+
+  /* ---------------- Small screens / vertical mobile ---------------- */
+  @media (max-width: 720px) {
+    #controls { padding: 8px 10px; gap: 8px; }
+    /* Search owns the first full row; actions + stats wrap below it */
+    .searchbox { flex: 1 1 100%; }
+    #search { flex: 1 1 auto; min-width: 0; max-width: none; }
+    /* 16px stops mobile Safari from auto-zooming on input focus */
+    #search, .col-filter { font-size: 16px; }
+    #stats { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    #wrap { padding: 0 8px 16px; }
+    #empty { padding: 48px 16px; }
+    body.dragging::after { font-size: 16px; padding: 0 24px; text-align: center; }
+    /* Columns stay usable: comfortable minimum width, #wrap pans horizontally.
+       (Column percentages still apply; #wrap just scrolls.) */
+    #table { min-width: 640px; }
+    /* Logo column: least informative on a narrow screen — drop it */
+    #table col[data-col="logo"], #table thead th:last-child, tbody td.cell-logo { display: none; }
+    /* Tighter help dialog padding */
+    #helpDialog h3 { padding: 16px 16px 0; }
+    #helpDialog .help-body { padding: 8px 16px; max-height: 58vh; }
+    #helpDialog footer { padding: 10px 16px 14px; }
+  }
+  @media (max-width: 430px) {
+    /* Very narrow phones: icon-only action buttons (titles carry the meaning).
+       Padding kept >=10px so touch targets stay comfortable (overrides the
+       coarse-pointer sizing, not shrinks below it). */
+    .btn-label { display: none; }
+    #openBtn, #openUrlBtn { padding: 10px 10px; }
+  }
+  @media (pointer: coarse) {
+    /* Touch: comfortable hit areas; 8px resize strips are unusable with fingers */
+    button { padding: 10px 14px; }
+    #searchClose, #clearFiltersBtn { padding: 10px; }
+    .col-handle { display: none; }
+  }
+</style>
+</head>
+<body>
+<section id="controls">
+  <div class="searchbox">
+    <input id="search" type="search" placeholder="Search all columns&hellip;" disabled>
+    <button id="searchClose" title="Clear search (Esc)" hidden disabled>&#10005;</button>
+  </div>
+  <button id="clearFiltersBtn" title="Clear search and all column filters" hidden>&#10006; Clear filters</button>
+  <span id="stats"></span>
+  <div class="spacer"></div>
+  <button id="openBtn" title="Open a local playlist file">&#128193;<span class="btn-label"> Open playlist</span></button>
+  <button id="openUrlBtn" title="Open a playlist from a URL">&#128279;<span class="btn-label"> Open from URL</span></button>
+  <button id="themeBtn" title="Toggle dark / light mode">&#127769;</button>
+  <button id="helpBtn" title="Help / About (?)">&#10067;</button>
+  <input type="file" id="fileInput" accept=".m3u,.m3u8,.txt,audio/x-mpegurl,application/x-mpegurl" hidden>
+</section>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="urlDialog" aria-labelledby="urlDialogTitle">
+  <form id="urlForm">
+    <h3 id="urlDialogTitle">Open playlist from URL</h3>
+    <p class="hint">Load a remote <b>.m3u</b> / <b>.m3u8</b> playlist over http(s).
+       The server must allow cross-origin requests (CORS).</p>
+    <input id="urlInput" type="url" inputmode="url" spellcheck="false" autocomplete="off"
+           placeholder="https://example.com/playlist.m3u8" autofocus required>
+    <menu>
+      <button type="button" id="urlCancel">Cancel</button>
+      <button type="submit" id="urlOk">Open</button>
+    </menu>
+  </form>
+</dialog>
+
+<dialog id="helpDialog" aria-labelledby="helpTitle">
+  <h3 id="helpTitle">Help & About</h3>
+  <div class="help-body">
+    <p>A lightweight, fully client-side viewer for <b>.m3u</b> / <b>.m3u8</b> playlists.
+       Files and URLs are parsed right in your browser &mdash; nothing is uploaded anywhere.</p>
+
+    <h4>Opening a playlist</h4>
+    <ul>
+      <li><b>From a file</b> &mdash; click <b>&#128193; Open playlist</b>, or drag & drop a
+          <code>.m3u</code> / <code>.m3u8</code> file anywhere on the page.</li>
+      <li><b>From a URL</b> &mdash; click <b>&#128279; Open from URL</b> and paste an
+          <code>http(s)://</code> link, or drag a playlist link straight onto the page.
+          The remote server must allow cross-origin requests (CORS).</li>
+    </ul>
+
+    <h4>Auto-opening with the <code>open</code> query parameter</h4>
+    <p>Add <code>?open=<playlist-url></code> to this page's address and the playlist is
+       fetched automatically as soon as the page loads. The <code>open</code> parameter is
+       then removed from the address bar, so a refresh will not load it again; any other
+       query parameters are kept. The value may be plain or URL-encoded.</p>
+    <code class="help-example">m3u-previewer.html?open=https://example.com/playlist.m3u</code>
+    <p>Only <code>http://</code> and <code>https://</code> URLs are accepted.</p>
+
+    <h4>Search & filters</h4>
+    <ul>
+      <li>Press <kbd>/</kbd> to jump to the global search box; <kbd>Esc</kbd> clears it.</li>
+      <li>Each column header has its own filter input (<kbd>Esc</kbd> clears the focused one;
+          <kbd>Enter</kbd> dismisses it).</li>
+      <li>Once anything is filtered, the <b>&#10006; Clear filters</b> button appears &mdash;
+          one click resets the search and every column filter.</li>
+    </ul>
+
+    <h4>Table</h4>
+    <ul>
+      <li>Click a column title to sort; click again to reverse the order.</li>
+      <li>Drag the thin handle on a header's right edge to resize that column (desktop
+          only); double-click the handle to restore its default width. Your layout is remembered.</li>
+      <li>Click any URL cell to copy it to the clipboard.</li>
+      <li>Large playlists are rendered virtually &mdash; only the rows currently in view
+          exist in the page, so even 20,000-channel lists scroll and filter smoothly.</li>
+    </ul>
+
+    <h4>Appearance</h4>
+    <ul>
+      <li>&#127769; / &#9728; toggles dark and light mode; the choice is remembered.</li>
+    </ul>
+  </div>
+  <footer><button id="helpClose" type="button">Close</button></footer>
+</dialog>
+
+<div id="wrap">
+  <div id="empty">
+    <div class="big">&#128250;</div>
+    <p>Drag & drop a <b>.m3u</b> / <b>.m3u8</b> file or playlist URL anywhere,<br>or choose one below.<br>
+       Press <kbd>/</kbd> to search once loaded.</p>
+    <button id="openBtn2">Choose file&hellip;</button>
+  </div>
+  <table id="table" hidden>
+    <colgroup>
+      <col data-col="id"       style="width:14%">
+      <col data-col="name"     style="width:22%">
+      <col data-col="group"    style="width:14%">
+      <col data-col="country"  style="width:8%">
+      <col data-col="language" style="width:14%">
+      <col data-col="url"      style="width:20%">
+      <col data-col="logo"     style="width:8%">
+    </colgroup>
+    <thead>
+      <tr>
+        <th data-key="id" aria-sort="ascending">
+          <span class="th-title" title="Sort by tvg-id (or row number when absent)">#</span>
+          <input class="col-filter" data-col="id" type="search" placeholder="Filter&hellip;" disabled>
+          <span class="col-handle" data-col="id"></span>
+        </th>
+        <th data-key="name">
+          <span class="th-title">Name</span>
+          <input class="col-filter" data-col="name" type="search" placeholder="Filter&hellip;" disabled>
+          <span class="col-handle" data-col="name"></span>
+        </th>
+        <th data-key="group">
+          <span class="th-title">Group</span>
+          <input class="col-filter" data-col="group" type="search" placeholder="Filter&hellip;" disabled>
+          <span class="col-handle" data-col="group"></span>
+        </th>
+        <th data-key="country">
+          <span class="th-title" title="Country code derived from tvg-id suffix (e.g. .us, .sg)">Country</span>
+          <input class="col-filter" data-col="country" type="search" placeholder="Filter&hellip;" disabled>
+          <span class="col-handle" data-col="country"></span>
+        </th>
+        <th data-key="language">
+          <span class="th-title" title="From tvg-language attribute (shown as &mdash; when absent)">Language</span>
+          <input class="col-filter" data-col="language" type="search" placeholder="Filter&hellip;" disabled>
+          <span class="col-handle" data-col="language"></span>
+        </th>
+        <th data-key="url">
+          <span class="th-title" title="Stream URL &mdash; click a cell to copy it">URL</span>
+          <input class="col-filter" data-col="url" type="search" placeholder="Filter&hellip;" disabled>
+          <span class="col-handle" data-col="url"></span>
+        </th>
+        <th class="th-logo"><span>Logo</span><span class="col-handle" data-col="logo"></span></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var items      = [];   /* parsed playlist entries */
+  var fileName   = "";
+  var sortKey    = "id";
+  var sortDir    = "asc";
+  var sortedItems = [];  /* items in sorted order; re-sorted only when key/items change */
+  var visibleRows = [];  /* sortedItems after search + column filters (virtualized data set) */
+  var groupsCount = 0;   /* stats computed once per load, not per render */
+  var langsCount  = 0;
+
+  var tbody    = document.getElementById("tbody");
+  var wrap     = document.getElementById("wrap");
+  var table    = document.getElementById("table");
+  var emptyBox = document.getElementById("empty");
+  var emptyMsg = emptyBox.querySelector("p");
+  var search   = document.getElementById("search");
+  var stats    = document.getElementById("stats");
+  var fileInput= document.getElementById("fileInput");
+  var themeBtn = document.getElementById("themeBtn");
+  var searchClose = document.getElementById("searchClose");
+  var clearFiltersBtn = document.getElementById("clearFiltersBtn");
+  var urlDialog  = document.getElementById("urlDialog");
+  var urlInput   = document.getElementById("urlInput");
+  var urlForm    = document.getElementById("urlForm");
+  var helpDialog = document.getElementById("helpDialog");
+  var colFilters  = document.querySelectorAll("input.col-filter");
+  var filters     = { id: "", name: "", group: "", country: "", language: "", url: "" };
+  var emptyDefaultHTML = emptyMsg.innerHTML;
+
+  var collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+  var esc = function (s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return {
+        "&": "\u0026amp;",
+        "<": "\u0026lt;",
+        ">": "\u0026gt;",
+        '"': "\u0026quot;",
+        "'": "\u0026#39;"
+      }[c];
+    });
+  };
+
+  /* Derive country code from tvg-id suffix (e.g. "AnimaxAsia.sg" -> "SG") */
+  function countryOf(id) {
+    var base = String(id).split("@")[0].trim();
+    var m = /\.([a-z]{2,3})$/i.exec(base);
+    return m ? m[1].toUpperCase() : "";
+  }
+
+  /* Pretty-print tvg-language: resolve bare ISO 639 codes ("hin") to display
+     names ("Hindi") via Intl.DisplayNames; tokens that are already names
+     ("English") pass through. Handles comma-separated multi-language values. */
+  var langNameCache = {};
+  var langDisplayNames = null;
+  function langToken(tok) {
+    var t = tok.trim();
+    if (!/^[a-z]{2,3}(-[A-Za-z0-9]+)?$/i.test(t)) return t; /* already a name or complex tag */
+    var key = t.toLowerCase();
+    if (!(key in langNameCache)) {
+      var out = t;
+      try {
+        if (!langDisplayNames) langDisplayNames = new Intl.DisplayNames(["en"], { type: "language" });
+        var dn = langDisplayNames.of(key);
+        if (dn && dn.toLowerCase() !== key) out = dn;
+      } catch (e) { /* keep raw token */ }
+      langNameCache[key] = out;
+    }
+    return langNameCache[key];
+  }
+  function prettyLang(value) {
+    return String(value).split(",").map(langToken).filter(Boolean).join(", ");
+  }
+
+  /* ---------------- M3U parsing ---------------- */
+  function parseM3U(text) {
+    var lines = text.split(/\r?\n/);
+    var out = [], cur = null, m;
+    var attrRe = /([\w-]+)="([^"]*)"/g;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line || line === "#EXTM3U") continue;
+      if (line.indexOf("#EXTINF") === 0) {
+        /* Split at the FIRST comma OUTSIDE quoted attribute values. Attributes
+           like tvg-language="French,English" contain commas, so a plain
+           indexOf(",") cuts mid-attribute and corrupts the display name. */
+        var ci = -1, inQuotes = false, c, j;
+        for (j = 0; j < line.length; j++) {
+          c = line.charAt(j);
+          if (c === '"') inQuotes = !inQuotes;
+          else if (c === "," && !inQuotes) { ci = j; break; }
+        }
+        var attrs = {}, attrPart = ci >= 0 ? line.slice(0, ci) : line;
+        attrRe.lastIndex = 0;
+        while ((m = attrRe.exec(attrPart))) attrs[m[1].toLowerCase()] = m[2];
+        cur = {
+          id:      attrs["tvg-id"] || "",
+          name:    (ci >= 0 ? line.slice(ci + 1) : "").trim() || attrs["tvg-name"] || "",
+          group:   attrs["group-title"] || "",
+          country: countryOf(attrs["tvg-id"] || ""),
+          language: (function (raw) {
+            return raw ? prettyLang(raw) : "";
+          })(attrs["tvg-language"] || ""),
+          language_raw: attrs["tvg-language"] || "",
+          logo:    attrs["tvg-logo"] || "",
+          url:     ""
+        };
+      } else if (line.charAt(0) === "#") {
+        if (cur && line.indexOf("#EXTGRP:") === 0 && !cur.group) cur.group = line.slice(8).trim();
+      } else if (cur) {
+        cur.url = line.trim();
+        out.push(cur);
+        cur = null;
+      }
+    }
+    return out;
+  }
+
+  /* ---------------- Data pipeline (tuned for 10k-20k items) ---------------- */
+  function anyFilter() {
+    for (var k in filters) if (filters[k]) return true;
+    return false;
+  }
+  /* All searchable text is lowercased ONCE per load (it.hay / it.lc), so every
+     keystroke is a plain indexOf scan with zero string building involved. */
+  function prepareItems(list) {
+    var groups = new Set(), langs = new Set();
+    for (var i = 0; i < list.length; i++) {
+      var it = list[i];
+      it.lc = {
+        id:       it.id.toLowerCase(),
+        name:     it.name.toLowerCase(),
+        group:    it.group.toLowerCase(),
+        country:  it.country.toLowerCase(),
+        /* language filter matches both the resolved name and the raw code */
+        language: (it.language + " " + it.language_raw).toLowerCase(),
+        url:      it.url.toLowerCase()
+      };
+      it.hay = it.lc.id + " " + it.lc.name + " " + it.lc.group + " " +
+               it.lc.country + " " + it.lc.language + " " + it.lc.url;
+      if (it.group) groups.add(it.group);
+      if (it.language) langs.add(it.language);
+    }
+    groupsCount = groups.size;
+    langsCount  = langs.size;
+  }
+
+  /* Sort items once per (items, sortKey, sortDir) change. A direction flip
+     just reverses the cached array; no 20k-row re-sort per keystroke. */
+  function resort() {
+    sortedItems = items.slice().sort(function (a, b) {
+      return collator.compare(a[sortKey], b[sortKey]);
+    });
+    if (sortDir === "desc") sortedItems.reverse();
+  }
+
+  function activeFilterKeys() {
+    var keys = [];
+    for (var k in filters) if (filters[k]) keys.push(k);
+    return keys;
+  }
+
+  /* Filter the pre-sorted array; output keeps the sorted order, so changing the
+     search text never requires a re-sort. */
+  function computeVisible() {
+    var q = search.value.trim().toLowerCase();
+    var keys = activeFilterKeys();
+    if (!q && !keys.length) return sortedItems;
+    var out = [];
+    for (var i = 0; i < sortedItems.length; i++) {
+      var it = sortedItems[i];
+      if (q && it.hay.indexOf(q) === -1) continue;
+      var ok = true;
+      for (var j = 0; j < keys.length; j++) {
+        if (it.lc[keys[j]].indexOf(filters[keys[j]]) === -1) { ok = false; break; }
+      }
+      if (ok) out.push(it);
+    }
+    return out;
+  }
+
+  /* ---------------- Virtualized rendering ---------------- */
+  /* Only the rows inside the viewport (+ overscan) exist in the DOM; spacer
+     rows stand in for everything above and below, so a 20k-row list costs
+     the same as a 40-row one. */
+  var ROW_H = 36;      /* matches "tbody tr.vrow td" height; verified by measurement */
+  var OVERSCAN = 6;
+  var rowHMeasured = false;
+
+  function padRow(px) {
+    return "<tr class='vpad'><td colspan='7' style='height:" + Math.round(px) + "px\"></td></tr>";
+  }
+
+  function rowHTML(it, i) {
+    return "<tr class='vrow'>"
+      + "<td class='cell-id'>" + esc(it.id || i + 1) + "</td>"
+      + "<td class='cell-name' title=\"" + esc(it.name) + "\">" + esc(it.name) + "</td>"
+      + "<td class='cell-group' title=\"" + esc(it.group) + "\">" + esc(it.group) + "</td>"
+      + "<td class='cell-country'>" + esc(it.country || "\u2014") + "</td>"
+      + "<td class='cell-language'>" + esc(it.language || "\u2014") + "</td>"
+      + "<td class='cell-url' data-url=\"" + esc(it.url) + "\" title=\"" + esc(it.url) + "\">" + esc(it.url) + "</td>"
+      + "<td class='cell-logo'>"
+      + (it.logo
+          ? "<img loading=\"lazy\" alt=\"\" src=\"" + esc(it.logo) + "\" onerror=\"this.outerHTML='<span class=nologo>&middot;</span>'\">"
+          : "<span class='nologo'>&middot;</span>")
+      + "</td></tr>";
+  }
+
+  function renderWindow() {
+    var total = visibleRows.length;
+    if (!total) {
+      tbody.innerHTML = items.length
+        ? "<tr class='nomatch'><td colspan='7'>No channels match the current filters.</td></tr>"
+        : "";
+      return;
+    }
+    /* Map the scroll position to a row window. tbody's top in scroll
+       coordinates is measured (thead + margins included), not assumed. */
+    var wrapRect = wrap.getBoundingClientRect();
+    var contentTop = tbody.getBoundingClientRect().top - wrapRect.top + wrap.scrollTop;
+    var first = Math.floor((wrap.scrollTop - contentTop) / ROW_H) - OVERSCAN;
+    if (first < 0) first = 0;
+    var last = first + Math.ceil(wrap.clientHeight / ROW_H) + OVERSCAN * 2;
+    if (last > total) last = total;
+
+    var html = "";
+    if (first > 0) html += padRow(first * ROW_H);
+    for (var i = first; i < last; i++) html += rowHTML(visibleRows[i], i);
+    if (last < total) html += padRow((total - last) * ROW_H);
+    tbody.innerHTML = html;
+
+    /* Verify the assumed row height once, then trust it (self-corrects) */
+    if (!rowHMeasured) {
+      var tr = tbody.querySelector("tr.vrow");
+      if (tr) {
+        var h = tr.getBoundingClientRect().height;
+        if (h > 10 && Math.abs(h - ROW_H) > 0.5) { ROW_H = h; renderWindow(); return; }
+        rowHMeasured = true;
+      }
+    }
+  }
+
+  /* Repaint just the visible window while scrolling (rAF-throttled) */
+  var scrollPending = false;
+  wrap.addEventListener("scroll", function () {
+    if (scrollPending) return;
+    scrollPending = true;
+    requestAnimationFrame(function () {
+      scrollPending = false;
+      renderWindow();
+    });
+  });
+  /* Viewport (or wrap layout) changed: recompute the visible window */
+  window.addEventListener("resize", function () { renderWindow(); });
+
+  function updateStats() {
+    stats.textContent =
+      "Showing " + visibleRows.length + " of " + items.length + " channels" +
+      " \u00B7 " + groupsCount + " groups" +
+      (langsCount > 0 ? " \u00B7 " + langsCount + " languages" : "") +
+      (search.value.trim() || anyFilter() ? " \u00B7 filtered" : "") +
+      (fileName ? " \u00B7 " + fileName : "");
+  }
+
+  function render() {
+    visibleRows = computeVisible();
+    renderWindow();
+    updateStats();
+    updateClearFilters();
+  }
+
+  function updateView() {
+    var loaded = items.length > 0;
+    table.hidden    = !loaded;
+    emptyBox.hidden = loaded;
+    search.disabled = !loaded;
+    colFilters.forEach(function (inp) { inp.disabled = !loaded; });
+    if (!loaded) {
+      search.value = "";
+      searchClose.hidden = true;
+      searchClose.disabled = true;
+      resetFilters();
+    }
+    render();
+  }
+
+  /* ---------------- Sorting (click the column title) ---------------- */
+  document.querySelectorAll("#table thead th[data-key]").forEach(function (th) {
+    th.querySelector(".th-title").addEventListener("click", function () {
+      var key = th.dataset.key;
+      if (sortKey === key) {
+        sortDir = sortDir === "asc" ? "desc" : "asc";
+        sortedItems.reverse(); /* direction flip: reverse the cache, no re-sort */
+      } else {
+        sortKey = key;
+        sortDir = "asc";
+        resort();
+      }
+      document.querySelectorAll("#table thead th[data-key]").forEach(function (t) {
+        t.setAttribute("aria-sort", t === th ? sortDir : "none");
+      });
+      wrap.scrollTop = 0; /* ordering changed completely: jump back to the top */
+      render();
+    });
+  });
+
+  /* ---------------- Global search (header) ---------------- */
+  function updateClearBtn() {
+    var hasText = search.value.length > 0;
+    searchClose.hidden = !hasText;
+    searchClose.disabled = !hasText;
+  }
+
+  var deb;
+  search.addEventListener("input", function () {
+    wrap.scrollTop = 0; /* results change as you type: jump back to the top */
+    clearTimeout(deb);
+    deb = setTimeout(render, 80);
+    updateClearBtn();
+    updateClearFilters();
+  });
+  searchClose.addEventListener("click", function () {
+    search.value = "";
+    updateClearBtn();
+    wrap.scrollTop = 0;
+    search.focus();
+    render();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "/" && document.activeElement !== search) {
+      e.preventDefault();
+      if (!search.disabled) search.focus();
+    } else if (e.key === "Escape" && document.activeElement === search) {
+      if (search.value) {
+        search.value = "";
+        updateClearBtn();
+        wrap.scrollTop = 0;
+        render();
+        search.focus();
+      }
+    } else if (e.key === "?" && document.activeElement !== search &&
+               !/(input|textarea)/i.test((document.activeElement && document.activeElement.tagName) || "")) {
+      e.preventDefault();
+      if (!helpDialog.open) helpDialog.showModal();
+    }
+  });
+
+  /* ---------------- Per-column header filters ---------------- */
+  function resetFilters() {
+    for (var k in filters) filters[k] = "";
+    colFilters.forEach(function (inp) {
+      inp.value = "";
+      inp.classList.remove("active");
+    });
+  }
+  var colDeb = {};
+  colFilters.forEach(function (inp) {
+    var key = inp.dataset.col;
+    inp.addEventListener("input", function () {
+      filters[key] = inp.value.trim().toLowerCase();
+      inp.classList.toggle("active", !!filters[key]);
+      wrap.scrollTop = 0;
+      updateClearFilters();
+      clearTimeout(colDeb[key]);
+      colDeb[key] = setTimeout(render, 80);
+    });
+    inp.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && inp.value) {
+        inp.value = "";
+        filters[key] = "";
+        inp.classList.remove("active");
+        wrap.scrollTop = 0;
+        render();
+      } else if (e.key === "Enter") {
+        inp.blur();
+      }
+    });
+  });
+
+  /* ---------------- Clear-all-filters button ---------------- */
+  function updateClearFilters() {
+    var active = !search.disabled && (!!search.value || anyFilter());
+    clearFiltersBtn.hidden = !active;
+    clearFiltersBtn.disabled = !active;
+  }
+  function clearAllFilters() {
+    search.value = "";
+    updateClearBtn();
+    resetFilters();
+    wrap.scrollTop = 0;
+    render();
+    search.focus();
+  }
+  clearFiltersBtn.addEventListener("click", clearAllFilters);
+
+  /* ---------------- Copy URL / toast ---------------- */
+  var toastEl = document.getElementById("toast");
+  var toastT  = 0;
+  function toast(msg, ms) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toastEl.classList.remove("show"); }, ms || 1400);
+  }
+  function copyText(t) {
+    function legacy() {
+      var ta = document.createElement("textarea");
+      ta.value = t;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(null, legacy);
+    } else {
+      legacy();
+    }
+    toast("\u2713 URL copied to clipboard");
+  }
+  tbody.addEventListener("click", function (e) {
+    var td = e.target.closest ? e.target.closest("td.cell-url") : null;
+    if (td && td.dataset.url) copyText(td.dataset.url);
+  });
+
+  /* ---------------- Playlist loading (file / URL) ---------------- */
+  /* Shared post-load routine: parse, reset the UI, render, refresh empty-state text */
+  function applyPlaylist(text, name) {
+    items    = parseM3U(text);
+    fileName = name;
+    prepareItems(items); /* lowercase haystacks + stats, once per load */
+    resort();            /* rebuild the cached sorted view */
+    search.value = "";
+    updateClearBtn();
+    resetFilters();
+    wrap.scrollTop = 0;
+    updateView();
+    emptyMsg.innerHTML = items.length ? emptyDefaultHTML :
+      "No <b>#EXTINF</b> entries found in this playlist.<br>Try another <b>.m3u</b> / <b>.m3u8</b> file or URL.";
+  }
+
+  /* Short label for a remote playlist: the file name when the URL ends in one, else the host */
+  function urlLabel(u) {
+    try {
+      var parts = u.pathname.split("/").filter(Boolean);
+      var last = parts.length ? parts[parts.length - 1] : "";
+      if (last && last.indexOf(".") !== -1) {
+        try { return decodeURIComponent(last); } catch (e) { return last; }
+      }
+      return u.hostname;
+    } catch (e) { return u.hostname; }
+  }
+
+  function fetchErrText(err) {
+    if (err && err.name === "TimeoutError") return "request timed out";
+    if (err && err.message) return err.message;
+    return "network error";
+  }
+
+  /* Fetch a remote playlist over http(s) and load it (subject to CORS) */
+  function loadFromUrl(raw) {
+    var u;
+    try { u = new URL(String(raw).trim(), location.href); }
+    catch (e) { toast("\u2717 Invalid URL", 3000); return; }
+    if (u.protocol !== "http:" && u.protocol !== "https:") {
+      toast("\u2717 Only http:// and https:// URLs are supported", 3000);
+      return;
+    }
+    if (!items.length) emptyMsg.innerHTML = "Loading playlist from<br><b>" + esc(u.href) + "</b>&hellip;";
+    var opts = {};
+    try { if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) opts.signal = AbortSignal.timeout(30000); } catch (e) {}
+    fetch(u.href, opts).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status + (r.statusText ? " " + r.statusText : ""));
+      return r.text();
+    }).then(function (text) {
+      applyPlaylist(text, urlLabel(u));
+      toast(items.length
+        ? "\u2713 Loaded " + items.length + " channels"
+        : "\u2717 No #EXTINF entries found", 2600);
+    }).catch(function (err) {
+      var reason = fetchErrText(err);
+      if (!items.length) {
+        emptyMsg.innerHTML = "Could not load playlist from<br><b>" + esc(u.href) + "</b><br>" +
+          esc(reason) + " &mdash; the server may not allow cross-origin (CORS) requests.";
+      }
+      toast("\u2717 Load failed: " + reason, 3200);
+    });
+  }
+
+  function openFile(f) {
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () { applyPlaylist(r.result, f.name); };
+    r.readAsText(f);
+  }
+
+  fileInput.addEventListener("change", function () { openFile(fileInput.files[0]); fileInput.value = ""; });
+  document.getElementById("openBtn").addEventListener("click",  function () { fileInput.click(); });
+  document.getElementById("openBtn2").addEventListener("click", function () { fileInput.click(); });
+
+  /* "Open from URL" dialog */
+  document.getElementById("openUrlBtn").addEventListener("click", function () {
+    urlInput.value = "";
+    urlDialog.showModal();
+  });
+  urlForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = urlInput.value.trim();
+    if (!v) { urlInput.focus(); return; }
+    urlDialog.close();
+    loadFromUrl(v);
+  });
+  document.getElementById("urlCancel").addEventListener("click", function () { urlDialog.close(); });
+
+  /* "Help / About" dialog */
+  document.getElementById("helpBtn").addEventListener("click", function () {
+    if (!helpDialog.open) helpDialog.showModal();
+  });
+  document.getElementById("helpClose").addEventListener("click", function () { helpDialog.close(); });
+
+  /* Drag & drop anywhere */
+  document.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    document.body.classList.add("dragging");
+  });
+  document.addEventListener("dragleave", function (e) {
+    if (!e.relatedTarget) document.body.classList.remove("dragging");
+  });
+  document.addEventListener("drop", function (e) {
+    e.preventDefault();
+    document.body.classList.remove("dragging");
+    var dt = e.dataTransfer;
+    var f = dt && dt.files && dt.files[0];
+    if (f) { openFile(f); return; }
+    /* No file dropped: accept a dragged playlist link / plain-text URL instead */
+    var uri = dt ? String(dt.getData("text/uri-list") || dt.getData("text/plain") || "") : "";
+    var lines = uri.split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (/^https?:\/\//i.test(line)) { loadFromUrl(line); return; }
+    }
+  });
+
+  /* ---------------- Column resize ---------------- */
+  /* Widths are stored in percent of table width so the table always fits the page */
+  var COLS = ["id", "name", "group", "country", "language", "url", "logo"];
+  var DEFAULT_W = { id: 14, name: 22, group: 14, country: 8, language: 14, url: 20, logo: 8 };
+  var MIN_PCT = 3;    /* smallest column share */
+  var MAX_PCT = 60;   /* largest single-column share */
+  var savedW = null;
+  try { savedW = JSON.parse(localStorage.getItem("m3u-preview-colw") || "null"); } catch (e) {}
+  var colw = {};
+  COLS.forEach(function (c) {
+    colw[c] = (savedW && typeof savedW[c] === "number" && savedW[c] >= MIN_PCT && savedW[c] <= MAX_PCT)
+      ? savedW[c] : DEFAULT_W[c];
+  });
+
+  var colgroup = table.querySelector("colgroup");
+  function colEl(c) { return colgroup.querySelector('col[data-col="' + c + '"]'); }
+  function normalizeWidths() {
+    /* Renormalize all shares so they sum to exactly 100 */
+    var total = 0;
+    COLS.forEach(function (c) { total += colw[c]; });
+    COLS.forEach(function (c) { colw[c] = colw[c] * 100 / total; });
+    COLS.forEach(function (c) { colEl(c).style.width = colw[c].toFixed(3) + "%"; });
+  }
+  function saveWidths() {
+    try { localStorage.setItem("m3u-preview-colw", JSON.stringify(colw)); } catch (e) {}
+  }
+  normalizeWidths();
+
+  var resizing = null; /* { col, startX, startPct, nextCol, startNextPct } */
+  document.querySelectorAll(".col-handle").forEach(function (h) {
+    h.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      h.setPointerCapture(e.pointerId);
+      var col = h.dataset.col;
+      var idx = COLS.indexOf(col);
+      resizing = {
+        col: col,
+        startX: e.clientX,
+        startPct: colw[col],
+        nextCol: COLS[idx + 1] || null, /* neighbor absorbs the delta */
+        startNextPct: idx < COLS.length - 1 ? colw[COLS[idx + 1]] : 0,
+      };
+      document.body.classList.add("col-resizing");
+    });
+    h.addEventListener("pointermove", function (e) {
+      if (!resizing) return;
+      var tablePx = table.getBoundingClientRect().width;
+      if (tablePx < 10) return;
+      var deltaPct = (e.clientX - resizing.startX) * 100 / tablePx;
+      /* Clamp this column; the right neighbor absorbs the remainder (kept in MIN..MAX too) */
+      var want = resizing.startPct + deltaPct;
+      var maxTake = resizing.nextCol ? resizing.startNextPct - MIN_PCT : (MAX_PCT - resizing.startPct);
+      var minGive = resizing.nextCol ? MIN_PCT - resizing.startPct : (MIN_PCT - resizing.startPct);
+      want = Math.max(resizing.startPct + minGive, Math.min(resizing.startPct + maxTake, want));
+      var applied = want - resizing.startPct;
+      colw[resizing.col] = want;
+      if (resizing.nextCol) colw[resizing.nextCol] = resizing.startNextPct - applied;
+      normalizeWidths();
+    });
+    function endResize() {
+      if (!resizing) return;
+      resizing = null;
+      document.body.classList.remove("col-resizing");
+      saveWidths();
+    }
+    h.addEventListener("pointerup", endResize);
+    h.addEventListener("pointercancel", endResize);
+  });
+  /* Double-click a handle to restore that column's default width */
+  document.querySelectorAll(".col-handle").forEach(function (h) {
+    h.addEventListener("dblclick", function () {
+      colw[h.dataset.col] = DEFAULT_W[h.dataset.col];
+      normalizeWidths();
+      saveWidths();
+    });
+  });
+
+  /* ---------------- Auto-open from ?open=<url> query parameter ---------------- */
+  /* On load: if ?open=<url> is present, strip the parameter from the address bar
+     (keeping every other query param); when the value is a valid http(s) URL, load
+     that playlist. The value may be plain or URL-encoded. */
+  (function () {
+    var target = null;
+    try {
+      var qs = new URLSearchParams(location.search);
+      target = qs.get("open");
+      if (target === null) return;
+      qs.delete("open");
+      var rest = qs.toString();
+      history.replaceState(history.state, "",
+        location.pathname + (rest ? "?" + rest : "") + location.hash);
+    } catch (e) { /* sandboxed contexts may block replaceState; still try to load */ }
+    if (!target || !String(target).trim()) return;
+    var u;
+    try { u = new URL(String(target).trim(), location.href); }
+    catch (e) { toast("\u2717 Invalid 'open' parameter", 3000); return; }
+    if (u.protocol !== "http:" && u.protocol !== "https:") {
+      toast("\u2717 'open' parameter must be an http(s) URL", 3000);
+      return;
+    }
+    loadFromUrl(u.href);
+  })();
+
+  /* ---------------- Theme ---------------- */
+  function setTheme(t) {
+    document.documentElement.dataset.theme = t;
+    themeBtn.innerHTML = t === "dark" ? "&#9728;" : "&#127769;";
+    try { localStorage.setItem("m3u-preview-theme", t); } catch (e) {}
+  }
+  themeBtn.addEventListener("click", function () {
+    setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+  });
+})();
+</script>
+</body>
+</html>

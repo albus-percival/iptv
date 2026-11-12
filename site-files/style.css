@@ -244,6 +244,11 @@ summary:focus-visible {
 	outline-offset: 2px;
 }
 
+/* Browser previewer blurb */
+.previewer {
+	margin: 48px 0 40px;
+}
+
 /* Players */
 .players {
 	margin: 48px 0 40px;
