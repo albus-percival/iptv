@@ -15,6 +15,16 @@ echo %CYAN%=== 1. Checking current status ===%RESET%
 git status
 echo.
 
+:: Check if git status output contains "nothing to commit"
+git status --porcelain > "%TEMP%\git_status_check.tmp"
+set /p GIT_STATUS_OUTPUT=<"%TEMP%\git_status_check.tmp"
+del "%TEMP%\git_status_check.tmp" 2>nul
+
+if "%GIT_STATUS_OUTPUT%"=="" (
+    echo %YELLOW%No changes detected. Working tree is clean.%RESET%
+    goto :end
+)
+
 echo %CYAN%=== 2. Extracting timestamp from All-Channels.stats.json ===%RESET%
 for /f "delims=" %%i in ('powershell -NoProfile -Command "$json = Get-Content 'All-Channels.stats.json' -Raw | ConvertFrom-Json; $date = [DateTime]::Parse($json.generatedAt); $date.ToString('dd-MMM-yyyy hh:mm:ss tt')"') do set "COMMIT_TIME=%%i"
 
@@ -45,7 +55,6 @@ echo.
 set "CUSTOM_MSG="
 set /p "CUSTOM_MSG=%YELLOW%Enter custom commit message (Leave blank to use default): %RESET%"
 
-:: If user typed a custom message, use it; otherwise fallback to default
 if not "%CUSTOM_MSG%"=="" (
     set "FINAL_MSG=%CUSTOM_MSG%"
 ) else (
