@@ -43,15 +43,33 @@
   }
   #controls .spacer { flex: 1; }
   .searchbox { display: flex; align-items: center; gap: 8px; }
+  /* Filter box: relative wrapper so the in-box clear ✕ can overlay the input.
+     Inside .searchbox the wrapper takes over the input's former flex sizing. */
+  .fbox {
+    position: relative; display: flex; align-items: center;
+    width: 100%; margin-top: 5px;
+  }
+  .searchbox .fbox { flex: 0 1 340px; min-width: 140px; max-width: 420px; margin-top: 0; }
   #search {
-    flex: 0 1 340px; min-width: 140px; max-width: 420px; padding: 7px 12px;
+    flex: 1 1 auto; min-width: 0; padding: 7px 30px 7px 12px;
     border: 1px solid var(--border); border-radius: 8px;
     background: var(--bg); color: var(--text); outline: none;
   }
   #search:focus { border-color: var(--accent); }
   .searchbox :disabled { opacity: .55; cursor: default; }
-  #searchClose { padding: 7px 10px; }
-  #searchClose[hidden] { display: none; }
+  /* In-box clear ✕: transparent, muted; hover = hand cursor + hover bg.
+     In .fbox it overlays the input's right edge with a generous hit area. */
+  .fb-clear {
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent; color: var(--muted);
+    border-radius: 6px; padding: 0; font-size: 12.5px; line-height: 1; cursor: pointer;
+  }
+  .fb-clear:hover { background: var(--hover); color: var(--text); border-color: transparent; }
+  .fb-clear[hidden] { display: none; }
+  .fbox .fb-clear { position: absolute; right: 2px; top: 0; bottom: 0; width: 28px; margin: 0; }
+  /* Hide the native in-input cancel button; the in-box ✕ replaces it */
+  .fbox input[type="search"]::-webkit-search-cancel-button,
+  .chipbox input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
   #clearFiltersBtn { padding: 7px 10px; font-size: 13px; }
   #clearFiltersBtn[hidden] { display: none; }
   #stats { color: var(--muted); font-size: 12.5px; }
@@ -94,6 +112,59 @@
   .col-filter:focus { border-color: var(--accent); }
   .col-filter.active { border-color: var(--accent); background: var(--accent-soft); }
   .col-filter:disabled { opacity: .55; }
+  /* Inside .fbox the wrapper owns the margin; the ✕ needs clear space */
+  .fbox .col-filter { flex: 1 1 auto; min-width: 0; margin-top: 0; padding-right: 30px; }
+
+  /* Multi-select chip container (group/country/language): same look as
+     .col-filter, but a flex-wrap row of chips + a borderless text input */
+  .chipbox {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 3px 4px;
+    width: 100%; margin-top: 5px; min-height: 27px; padding: 2px 6px;
+    font: 12px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    text-transform: none; letter-spacing: normal;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg); color: var(--text); outline: none;
+  }
+  .chipbox:focus-within { border-color: var(--accent); }
+  .chipbox.active { border-color: var(--accent); background: var(--accent-soft); }
+  .chipbox.off { opacity: .55; }
+  .chip-input {
+    flex: 1 1 36px; min-width: 36px; padding: 3px 0;
+    border: none; outline: none; background: transparent; color: var(--text);
+    font: 12px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .chip-input::placeholder { color: var(--muted); }
+  /* In a chipbox the ✕ is a regular flex item pinned to the end (wraps fine) */
+  .chipbox .fb-clear { margin-left: auto; align-self: stretch; min-width: 28px; padding: 0 4px; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
+    background: var(--accent-soft); border-radius: 10px;
+    padding: 1px 4px 1px 8px; font-size: 11.5px;
+  }
+  .chip-label { max-width: 110px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .chip-x {
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent; color: var(--muted);
+    border-radius: 6px; padding: 2px 4px; font-size: 10.5px; line-height: 1; cursor: pointer;
+  }
+  .chip-x:hover { background: var(--hover); color: var(--text); border-color: transparent; }
+
+  /* Suggestion dropdown: appended to <body> and position: fixed, because the
+     sticky th is overflow: hidden and would clip an in-header dropdown */
+  .ac-drop {
+    position: fixed; z-index: 30; padding: 4px 0;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+    max-height: 280px; max-width: calc(100vw - 12px); overflow-y: auto;
+  }
+  .ac-drop[hidden] { display: none; }
+  .ac-item {
+    padding: 6px 10px; cursor: pointer; font-size: 12.5px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ac-item:hover, .ac-item.ac-active { background: var(--accent-soft); }
+  .ac-b { color: var(--accent); font-weight: 600; }
 
   /* Fixed layout: every cell clips with an ellipsis; widths come from <colgroup> */
   tbody td {
@@ -200,9 +271,9 @@
     #controls { padding: 8px 10px; gap: 8px; }
     /* Search owns the first full row; actions + stats wrap below it */
     .searchbox { flex: 1 1 100%; }
-    #search { flex: 1 1 auto; min-width: 0; max-width: none; }
+    .searchbox .fbox { flex: 1 1 auto; min-width: 0; max-width: none; }
     /* 16px stops mobile Safari from auto-zooming on input focus */
-    #search, .col-filter { font-size: 16px; }
+    #search, .col-filter, .chip-input { font-size: 16px; }
     #stats { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     #wrap { padding: 0 8px 16px; }
     #empty { padding: 48px 16px; }
@@ -227,16 +298,22 @@
   @media (pointer: coarse) {
     /* Touch: comfortable hit areas; 8px resize strips are unusable with fingers */
     button { padding: 10px 14px; }
-    #searchClose, #clearFiltersBtn { padding: 10px; }
+    #clearFiltersBtn { padding: 10px; }
     .col-handle { display: none; }
+    /* Comfortable touch sizing for the in-box ✕, chip ✕ and dropdown rows */
+    .fb-clear { min-width: 32px; }
+    .chip-x { padding: 5px 6px; }
+    .ac-item { padding: 9px 12px; }
   }
 </style>
 </head>
 <body>
 <section id="controls">
   <div class="searchbox">
-    <input id="search" type="search" placeholder="Search all columns&hellip;" disabled>
-    <button id="searchClose" title="Clear search (Esc)" hidden disabled>&#10005;</button>
+    <div class="fbox">
+      <input id="search" type="search" placeholder="Search all columns&hellip;" disabled>
+      <button class="fb-clear" type="button" title="Clear search (Esc)" hidden disabled>&#10005;</button>
+    </div>
   </div>
   <button id="clearFiltersBtn" title="Clear search and all column filters" hidden>&#10006; Clear filters</button>
   <span id="stats"></span>
@@ -291,7 +368,16 @@
     <ul>
       <li>Press <kbd>/</kbd> to jump to the global search box; <kbd>Esc</kbd> clears it.</li>
       <li>Each column header has its own filter input (<kbd>Esc</kbd> clears the focused one;
-          <kbd>Enter</kbd> dismisses it).</li>
+          <kbd>Enter</kbd> dismisses it); the in-box <b>&#10005;</b> clears it with one click.</li>
+      <li>The <b>Group</b>, <b>Country</b> and <b>Language</b> headers offer suggestion
+          dropdowns: type to search or click to browse the playlist's values, then press
+          <kbd>Enter</kbd> (or click a suggestion) to add it as a chip.
+          <kbd>&#8593;</kbd> / <kbd>&#8595;</kbd> pick a suggestion,
+          <kbd>Esc</kbd> first closes the dropdown, then clears the typed text.</li>
+      <li>Those columns accept multiple values as chips &mdash; a channel matches when
+          <b>any</b> selected value matches; columns still combine with each other.</li>
+      <li><b>Country</b> filters by code <i>or</i> country name (e.g. <code>IN</code> and
+          <code>India</code> both match Indian channels); chips show the code.</li>
       <li>Once anything is filtered, the <b>&#10006; Clear filters</b> button appears &mdash;
           one click resets the search and every column filter.</li>
     </ul>
@@ -335,32 +421,50 @@
       <tr>
         <th data-key="id" aria-sort="ascending">
           <span class="th-title" title="Sort by tvg-id (or row number when absent)">#</span>
-          <input class="col-filter" data-col="id" type="search" placeholder="Filter&hellip;" disabled>
+          <div class="fbox">
+            <input class="col-filter" data-col="id" type="search" placeholder="Filter&hellip;" disabled>
+            <button class="fb-clear" type="button" title="Clear filter (Esc)" hidden disabled>&#10005;</button>
+          </div>
           <span class="col-handle" data-col="id"></span>
         </th>
         <th data-key="name">
           <span class="th-title">Name</span>
-          <input class="col-filter" data-col="name" type="search" placeholder="Filter&hellip;" disabled>
+          <div class="fbox">
+            <input class="col-filter" data-col="name" type="search" placeholder="Filter&hellip;" disabled>
+            <button class="fb-clear" type="button" title="Clear filter (Esc)" hidden disabled>&#10005;</button>
+          </div>
           <span class="col-handle" data-col="name"></span>
         </th>
         <th data-key="group">
           <span class="th-title">Group</span>
-          <input class="col-filter" data-col="group" type="search" placeholder="Filter&hellip;" disabled>
+          <div class="chipbox" data-col="group">
+            <input class="chip-input" type="search" placeholder="Filter&hellip;" autocomplete="off" spellcheck="false" disabled>
+            <button class="fb-clear" type="button" title="Clear filter (Esc)" hidden disabled>&#10005;</button>
+          </div>
           <span class="col-handle" data-col="group"></span>
         </th>
         <th data-key="country">
-          <span class="th-title" title="Country code derived from tvg-id suffix (e.g. .us, .sg)">Country</span>
-          <input class="col-filter" data-col="country" type="search" placeholder="Filter&hellip;" disabled>
+          <span class="th-title" title="Country code derived from tvg-id suffix (e.g. .us, .sg); filter by code or country name">Country</span>
+          <div class="chipbox" data-col="country">
+            <input class="chip-input" type="search" placeholder="Filter&hellip;" autocomplete="off" spellcheck="false" disabled>
+            <button class="fb-clear" type="button" title="Clear filter (Esc)" hidden disabled>&#10005;</button>
+          </div>
           <span class="col-handle" data-col="country"></span>
         </th>
         <th data-key="language">
           <span class="th-title" title="From tvg-language attribute (shown as &mdash; when absent)">Language</span>
-          <input class="col-filter" data-col="language" type="search" placeholder="Filter&hellip;" disabled>
+          <div class="chipbox" data-col="language">
+            <input class="chip-input" type="search" placeholder="Filter&hellip;" autocomplete="off" spellcheck="false" disabled>
+            <button class="fb-clear" type="button" title="Clear filter (Esc)" hidden disabled>&#10005;</button>
+          </div>
           <span class="col-handle" data-col="language"></span>
         </th>
         <th data-key="url">
           <span class="th-title" title="Stream URL &mdash; click a cell to copy it">URL</span>
-          <input class="col-filter" data-col="url" type="search" placeholder="Filter&hellip;" disabled>
+          <div class="fbox">
+            <input class="col-filter" data-col="url" type="search" placeholder="Filter&hellip;" disabled>
+            <button class="fb-clear" type="button" title="Clear filter (Esc)" hidden disabled>&#10005;</button>
+          </div>
           <span class="col-handle" data-col="url"></span>
         </th>
         <th class="th-logo"><span>Logo</span><span class="col-handle" data-col="logo"></span></th>
@@ -392,14 +496,33 @@
   var stats    = document.getElementById("stats");
   var fileInput= document.getElementById("fileInput");
   var themeBtn = document.getElementById("themeBtn");
-  var searchClose = document.getElementById("searchClose");
+  var searchClearBtn = search.parentNode.querySelector("button.fb-clear");
   var clearFiltersBtn = document.getElementById("clearFiltersBtn");
   var urlDialog  = document.getElementById("urlDialog");
   var urlInput   = document.getElementById("urlInput");
   var urlForm    = document.getElementById("urlForm");
   var helpDialog = document.getElementById("helpDialog");
-  var colFilters  = document.querySelectorAll("input.col-filter");
-  var filters     = { id: "", name: "", group: "", country: "", language: "", url: "" };
+  var colFilters  = document.querySelectorAll("input.col-filter, input.chip-input");
+  /* Single-value column filters are strings; group/country/language hold
+     arrays of committed chips (union-matched inside computeVisible) */
+  var filters     = { id: "", name: "", url: "", group: [], country: [], language: [] };
+  var MULTI_COLS  = ["group", "country", "language"];
+  var plainBoxes  = []; /* { input, clear } for the id/name/url header filters */
+  var chipBoxes   = {}; /* col -> { box, input, clear } for the chip columns */
+  document.querySelectorAll(".fbox > input.col-filter").forEach(function (inp) {
+    plainBoxes.push({ input: inp, clear: inp.parentNode.querySelector("button.fb-clear") });
+  });
+  document.querySelectorAll(".chipbox").forEach(function (box) {
+    chipBoxes[box.dataset.col] = {
+      box: box,
+      input: box.querySelector("input.chip-input"),
+      clear: box.querySelector("button.fb-clear")
+    };
+  });
+  /* Suggestion caches + the country codes present in the data; both are
+     rebuilt once per playlist load inside prepareItems() */
+  var sugCache   = { group: [], country: [], language: [] };
+  var knownCodes = {};
   var emptyDefaultHTML = emptyMsg.innerHTML;
 
   var collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
@@ -420,6 +543,26 @@
     var base = String(id).split("@")[0].trim();
     var m = /\.([a-z]{2,3})$/i.exec(base);
     return m ? m[1].toUpperCase() : "";
+  }
+
+  /* Resolve a country code ("IN") to its English name ("India") via
+     Intl.DisplayNames; empty when absent, invalid or unsupported. */
+  var countryNameCache = {};
+  var regionDisplayNames = null;
+  function countryName(code) {
+    var c = String(code || "").trim();
+    if (!c) return "";
+    var key = c.toLowerCase();
+    if (!(key in countryNameCache)) {
+      var out = "";
+      try {
+        if (!regionDisplayNames) regionDisplayNames = new Intl.DisplayNames(["en"], { type: "region" });
+        var dn = regionDisplayNames.of(key.toUpperCase());
+        if (dn && dn.toLowerCase() !== key) out = dn;
+      } catch (e) { /* unsupported or not a valid region code: no name */ }
+      countryNameCache[key] = out;
+    }
+    return countryNameCache[key];
   }
 
   /* Pretty-print tvg-language: resolve bare ISO 639 codes ("hin") to display
@@ -492,20 +635,29 @@
 
   /* ---------------- Data pipeline (tuned for 10k-20k items) ---------------- */
   function anyFilter() {
-    for (var k in filters) if (filters[k]) return true;
+    if (filters.id || filters.name || filters.url) return true;
+    for (var i = 0; i < MULTI_COLS.length; i++) {
+      var col = MULTI_COLS[i];
+      /* pending typed text filters live too, so it counts as an active filter */
+      if (filters[col].length || chipBoxes[col].input.value.trim()) return true;
+    }
     return false;
   }
   /* All searchable text is lowercased ONCE per load (it.hay / it.lc), so every
      keystroke is a plain indexOf scan with zero string building involved. */
   function prepareItems(list) {
-    var groups = new Set(), langs = new Set();
-    for (var i = 0; i < list.length; i++) {
+    var groups = new Set(), langs = new Set(), codes = new Set(), langToks = new Set();
+    var i, t, tk;
+    for (i = 0; i < list.length; i++) {
       var it = list[i];
+      var cName = countryName(it.country);
+      it.countryName = cName;
       it.lc = {
         id:       it.id.toLowerCase(),
         name:     it.name.toLowerCase(),
         group:    it.group.toLowerCase(),
-        country:  it.country.toLowerCase(),
+        /* country filter matches both the code and the full country name */
+        country:  (it.country + " " + cName).toLowerCase(),
         /* language filter matches both the resolved name and the raw code */
         language: (it.language + " " + it.language_raw).toLowerCase(),
         url:      it.url.toLowerCase()
@@ -513,10 +665,31 @@
       it.hay = it.lc.id + " " + it.lc.name + " " + it.lc.group + " " +
                it.lc.country + " " + it.lc.language + " " + it.lc.url;
       if (it.group) groups.add(it.group);
-      if (it.language) langs.add(it.language);
+      if (it.language) {
+        langs.add(it.language);
+        var toks = it.language.split(",");
+        for (t = 0; t < toks.length; t++) {
+          tk = toks[t].trim();
+          if (tk) langToks.add(tk);
+        }
+      }
+      if (it.country) codes.add(it.country);
     }
     groupsCount = groups.size;
     langsCount  = langs.size;
+    /* Suggestion caches for the group/country/language dropdowns: distinct
+       values, sorted once per load (country entries carry the resolved name) */
+    sugCache  = { group: [], country: [], language: [] };
+    knownCodes = {};
+    groups.forEach(function (g) { sugCache.group.push(g); });
+    sugCache.group.sort(function (a, b) { return collator.compare(a, b); });
+    codes.forEach(function (c) {
+      sugCache.country.push({ code: c, name: countryName(c) });
+      knownCodes[c.toLowerCase()] = true;
+    });
+    sugCache.country.sort(function (a, b) { return collator.compare(a.code, b.code); });
+    langToks.forEach(function (l) { sugCache.language.push(l); });
+    sugCache.language.sort(function (a, b) { return collator.compare(a, b); });
   }
 
   /* Sort items once per (items, sortKey, sortDir) change. A direction flip
@@ -528,25 +701,57 @@
     if (sortDir === "desc") sortedItems.reverse();
   }
 
-  function activeFilterKeys() {
-    var keys = [];
-    for (var k in filters) if (filters[k]) keys.push(k);
-    return keys;
+  /* Union-match for a multi column: the item matches when ANY of the terms
+     (chips + pending typed text) matches. Terms arrive pre-lowercased from
+     computeVisible(), so this loop is plain indexOf reads with no string
+     building. Country terms that equal a known country code filter that
+     code exactly; anything else is a free-text match against "code name"
+     (so both "in" and "india" find IN - India). */
+  function multiMatch(it, col, terms) {
+    for (var k = 0; k < terms.length; k++) {
+      var t = terms[k];
+      if (col === "country") {
+        if (knownCodes[t] ? it.country.toLowerCase() === t
+                          : it.lc.country.indexOf(t) !== -1) return true;
+      } else if (it.lc[col].indexOf(t) !== -1) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /* Filter the pre-sorted array; output keeps the sorted order, so changing the
-     search text never requires a re-sort. */
+     search text never requires a re-sort. Columns AND against each other (and
+     the global search); the terms of one chip column OR among themselves. */
   function computeVisible() {
     var q = search.value.trim().toLowerCase();
-    var keys = activeFilterKeys();
-    if (!q && !keys.length) return sortedItems;
+    var i, j, col;
+    var plain = []; /* [ [key, term], ... ] for the single-value columns */
+    if (filters.id)   plain.push(["id", filters.id]);
+    if (filters.name) plain.push(["name", filters.name]);
+    if (filters.url)  plain.push(["url", filters.url]);
+    var multi = []; /* [ [col, terms], ... ] for the chip columns */
+    for (i = 0; i < MULTI_COLS.length; i++) {
+      col = MULTI_COLS[i];
+      /* lowercase each term ONCE per call so multiMatch does plain indexOf
+         scans only: no string building inside the item loop */
+      var terms = [];
+      for (j = 0; j < filters[col].length; j++) terms.push(String(filters[col][j]).trim().toLowerCase());
+      var pending = chipBoxes[col].input.value.trim();
+      if (pending) terms.push(pending.toLowerCase());
+      if (terms.length) multi.push([col, terms]);
+    }
+    if (!q && !plain.length && !multi.length) return sortedItems;
     var out = [];
-    for (var i = 0; i < sortedItems.length; i++) {
+    for (i = 0; i < sortedItems.length; i++) {
       var it = sortedItems[i];
       if (q && it.hay.indexOf(q) === -1) continue;
       var ok = true;
-      for (var j = 0; j < keys.length; j++) {
-        if (it.lc[keys[j]].indexOf(filters[keys[j]]) === -1) { ok = false; break; }
+      for (j = 0; j < plain.length; j++) {
+        if (it.lc[plain[j][0]].indexOf(plain[j][1]) === -1) { ok = false; break; }
+      }
+      if (ok) for (j = 0; j < multi.length; j++) {
+        if (!multiMatch(it, multi[j][0], multi[j][1])) { ok = false; break; }
       }
       if (ok) out.push(it);
     }
@@ -617,6 +822,10 @@
   /* Repaint just the visible window while scrolling (rAF-throttled) */
   var scrollPending = false;
   wrap.addEventListener("scroll", function () {
+    /* The suggestion dropdown is fixed to the viewport: user scrolling closes it.
+       Programmatic wrapTop0 resets land here as the first event and are consumed. */
+    if (ddScrollLock) ddScrollLock = false;
+    else if (ddCol !== null) closeSuggest();
     if (scrollPending) return;
     scrollPending = true;
     requestAnimationFrame(function () {
@@ -625,7 +834,7 @@
     });
   });
   /* Viewport (or wrap layout) changed: recompute the visible window */
-  window.addEventListener("resize", function () { renderWindow(); });
+  window.addEventListener("resize", function () { renderWindow(); positionSuggest(); });
 
   function updateStats() {
     stats.textContent =
@@ -641,6 +850,7 @@
     renderWindow();
     updateStats();
     updateClearFilters();
+    updateClearBtn();
   }
 
   function updateView() {
@@ -649,10 +859,12 @@
     emptyBox.hidden = loaded;
     search.disabled = !loaded;
     colFilters.forEach(function (inp) { inp.disabled = !loaded; });
+    MULTI_COLS.forEach(function (col) {
+      chipBoxes[col].box.classList.toggle("off", !loaded);
+    });
     if (!loaded) {
       search.value = "";
-      searchClose.hidden = true;
-      searchClose.disabled = true;
+      closeSuggest();
       resetFilters();
     }
     render();
@@ -679,10 +891,17 @@
   });
 
   /* ---------------- Global search (header) ---------------- */
+  /* Keep every in-box ✕ in step with its box's content (text or chips) */
   function updateClearBtn() {
-    var hasText = search.value.length > 0;
-    searchClose.hidden = !hasText;
-    searchClose.disabled = !hasText;
+    var has = !!search.value;
+    searchClearBtn.hidden = !has;
+    searchClearBtn.disabled = !has;
+    plainBoxes.forEach(function (b) {
+      var h = !!b.input.value;
+      b.clear.hidden = !h;
+      b.clear.disabled = !h;
+    });
+    MULTI_COLS.forEach(function (col) { syncBox(col); });
   }
 
   var deb;
@@ -693,12 +912,14 @@
     updateClearBtn();
     updateClearFilters();
   });
-  searchClose.addEventListener("click", function () {
+  search.addEventListener("focus", function () { updateClearBtn(); });
+  searchClearBtn.addEventListener("click", function () {
     search.value = "";
     updateClearBtn();
+    closeSuggest();
     wrap.scrollTop = 0;
-    search.focus();
     render();
+    search.focus();
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "/" && document.activeElement !== search) {
@@ -721,34 +942,320 @@
 
   /* ---------------- Per-column header filters ---------------- */
   function resetFilters() {
-    for (var k in filters) filters[k] = "";
+    filters.id = filters.name = filters.url = "";
+    MULTI_COLS.forEach(function (col) { filters[col] = []; });
     colFilters.forEach(function (inp) {
       inp.value = "";
       inp.classList.remove("active");
     });
+    MULTI_COLS.forEach(function (col) { renderChips(col); });
   }
   var colDeb = {};
-  colFilters.forEach(function (inp) {
-    var key = inp.dataset.col;
+  plainBoxes.forEach(function (b) {
+    var inp = b.input, key = inp.dataset.col;
     inp.addEventListener("input", function () {
       filters[key] = inp.value.trim().toLowerCase();
       inp.classList.toggle("active", !!filters[key]);
       wrap.scrollTop = 0;
       updateClearFilters();
+      updateClearBtn();
       clearTimeout(colDeb[key]);
       colDeb[key] = setTimeout(render, 80);
     });
+    inp.addEventListener("focus", function () { updateClearBtn(); });
     inp.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && inp.value) {
         inp.value = "";
         filters[key] = "";
         inp.classList.remove("active");
+        updateClearBtn();
         wrap.scrollTop = 0;
         render();
       } else if (e.key === "Enter") {
         inp.blur();
       }
     });
+    b.clear.addEventListener("click", function () {
+      inp.value = "";
+      filters[key] = "";
+      inp.classList.remove("active");
+      closeSuggest();
+      updateClearBtn();
+      wrap.scrollTop = 0;
+      render();
+      inp.focus();
+    });
+  });
+
+  /* ---------------- Multi-select chips (group / country / language) ---------------- */
+  /* Inside one chip column the terms are UNION-matched (any term hits); across
+     columns and the global search everything stays AND-ed (computeVisible). */
+  function addChip(col, value) {
+    var v = String(value).trim();
+    if (!v) return;
+    var arr = filters[col];
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i].toLowerCase() === v.toLowerCase()) return; /* dedupe */
+    }
+    arr.push(v);
+  }
+  /* A multi box counts as active (and shows its ✕) with chips OR pending text */
+  function syncBox(col) {
+    var entry = chipBoxes[col];
+    var has = filters[col].length > 0 || entry.input.value.trim() !== "";
+    entry.box.classList.toggle("active", has);
+    entry.clear.hidden = !has;
+    entry.clear.disabled = !has;
+  }
+  function renderChips(col) {
+    var entry = chipBoxes[col];
+    var old = entry.box.querySelectorAll(".chip");
+    for (var i = 0; i < old.length; i++) entry.box.removeChild(old[i]);
+    var arr = filters[col];
+    for (var j = 0; j < arr.length; j++) {
+      (function (val) {
+        var chip = document.createElement("span");
+        chip.className = "chip";
+        var label = document.createElement("span");
+        label.className = "chip-label";
+        label.textContent = val;
+        var tip = val;
+        if (col === "country") {
+          var nm = countryName(val);
+          if (nm) tip = nm; /* chip shows the code; tooltip carries the full name */
+        }
+        label.title = tip;
+        chip.appendChild(label);
+        var x = document.createElement("button");
+        x.type = "button";
+        x.className = "chip-x";
+        x.title = "Remove";
+        x.textContent = "\u2715";
+        x.addEventListener("click", function () { removeChip(col, val); });
+        chip.appendChild(x);
+        entry.box.insertBefore(chip, entry.input);
+      })(arr[j]);
+    }
+    syncBox(col);
+  }
+  function removeChip(col, value) {
+    var arr = filters[col];
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i] === value) { arr.splice(i, 1); break; }
+    }
+    renderChips(col);
+    wrapTop0();
+    render();
+    if (ddCol === col) suggestFor(col); /* still focused: refresh the dropdown */
+  }
+  function commitChip(col, value) {
+    addChip(col, value);
+    var entry = chipBoxes[col];
+    entry.input.value = "";
+    renderChips(col);
+    wrapTop0();
+    render();
+    entry.input.focus();
+    closeSuggest(); /* refocusing may re-open the dropdown; close last */
+  }
+
+  MULTI_COLS.forEach(function (col) {
+    var entry = chipBoxes[col];
+    entry.clear.addEventListener("click", function () {
+      filters[col] = [];
+      entry.input.value = "";
+      renderChips(col);
+      wrapTop0();
+      render();
+      entry.input.focus();
+      closeSuggest(); /* the focus event may re-open it: end up closed */
+    });
+    entry.input.addEventListener("input", function () {
+      syncBox(col);
+      wrapTop0();
+      updateClearFilters();
+      clearTimeout(colDeb[col]);
+      colDeb[col] = setTimeout(render, 80);
+      suggestFor(col);
+    });
+    entry.input.addEventListener("focus", function () {
+      updateClearBtn();
+      if (!entry.input.disabled) suggestFor(col);
+    });
+    entry.input.addEventListener("blur", function () { closeSuggest(); });
+    entry.input.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        if (ddCol !== col || !ddItems.length) return;
+        e.preventDefault();
+        var n = ddItems.length;
+        if (e.key === "ArrowDown") ddActive = ddActive < 0 ? 0 : (ddActive + 1) % n;
+        else ddActive = ddActive <= 0 ? n - 1 : ddActive - 1;
+        markActive();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (ddCol === col && ddActive >= 0) commitChip(col, ddItems[ddActive].value);
+        else {
+          var txt = entry.input.value.trim();
+          if (txt) commitChip(col, txt);
+        }
+      } else if (e.key === "Escape") {
+        /* First Esc only closes the dropdown; the text clears on the next one */
+        e.preventDefault();
+        if (ddCol !== null) closeSuggest();
+        else if (entry.input.value) {
+          entry.input.value = "";
+          syncBox(col);
+          wrapTop0();
+          render();
+        }
+      }
+    });
+  });
+
+  /* ---------------- Autocomplete suggestions (one shared dropdown) ---------------- */
+  /* thead is sticky + overflow: hidden, so the dropdown lives on <body> and is
+     positioned with position: fixed from the chip box's bounding rect. */
+  var dd = document.createElement("div");
+  dd.className = "ac-drop";
+  dd.setAttribute("role", "listbox");
+  dd.hidden = true;
+  document.body.appendChild(dd);
+  var ddCol    = null;  /* column the dropdown is open for */
+  var ddItems  = [];    /* [{ value, html }] */
+  var ddActive = -1;    /* keyboard-active item */
+  var ddScrollLock = false; /* one wrapTop0 scroll event may pass through */
+
+  /* Reset the list scroll without the scroll event closing the dropdown:
+     the flag is consumed by the FIRST scroll event it produces (scroll events
+     fire asynchronously, so a timeout would release the flag too early). */
+  function wrapTop0() {
+    if (wrap.scrollTop !== 0) {
+      ddScrollLock = true;
+      wrap.scrollTop = 0;
+    }
+  }
+  function closeSuggest() {
+    ddCol = null;
+    ddItems = [];
+    ddActive = -1;
+    dd.hidden = true;
+    dd.innerHTML = "";
+  }
+  function positionSuggest() {
+    if (ddCol === null) return;
+    var rect = chipBoxes[ddCol].box.getBoundingClientRect();
+    dd.style.left = rect.left + "px";
+    dd.style.top = (rect.bottom + 2) + "px";
+    dd.style.width = Math.max(rect.width, 220) + "px";
+  }
+  function markActive() {
+    var kids = dd.children;
+    for (var i = 0; i < kids.length; i++) {
+      kids[i].className = "ac-item" + (i === ddActive ? " ac-active" : "");
+    }
+    var el = kids[ddActive];
+    if (el) { /* keep the active item inside the dropdown's own viewport */
+      var top = el.offsetTop, bot = top + el.offsetHeight;
+      if (top < dd.scrollTop) dd.scrollTop = top;
+      else if (bot > dd.scrollTop + dd.clientHeight) dd.scrollTop = bot - dd.clientHeight;
+    }
+  }
+  function suggestFor(col) {
+    var entry = chipBoxes[col];
+    if (!items.length || entry.input.disabled) { closeSuggest(); return; }
+    ddItems = computeSuggestions(col, entry.input.value);
+    ddActive = -1;
+    if (!ddItems.length) { closeSuggest(); return; }
+    ddCol = col;
+    var html = "";
+    for (var i = 0; i < ddItems.length; i++) {
+      html += "<div class=\"ac-item\" role=\"option\" data-i=\"" + i + "\">" +
+              ddItems[i].html + "</div>";
+    }
+    dd.innerHTML = html;
+    dd.scrollTop = 0;
+    dd.hidden = false;
+    positionSuggest();
+  }
+
+  /* Values already committed as chips stay out of the suggestions */
+  function chipHas(col, value) {
+    var v = String(value).toLowerCase();
+    var arr = filters[col];
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i].toLowerCase() === v) return true;
+    }
+    return false;
+  }
+  /* Escape s, bolding every occurrence of the (lowercase) query */
+  function boldHTML(s, q) {
+    var idx = String(s).toLowerCase().indexOf(q);
+    if (idx === -1) return esc(s);
+    return esc(s.slice(0, idx)) + "<b class=\"ac-b\">" + esc(s.substr(idx, q.length)) + "</b>" +
+      boldHTML(s.slice(idx + q.length), q);
+  }
+  function countryOptionHTML(c, q) {
+    var html = q && c.code.toLowerCase().indexOf(q) !== -1 ? boldHTML(c.code, q) : esc(c.code);
+    if (c.name) {
+      html += " \u00B7 " +
+        (q && c.name.toLowerCase().indexOf(q) !== -1 ? boldHTML(c.name, q) : esc(c.name));
+    }
+    return html;
+  }
+  /* Google-style ranking: values starting with the query first, then values
+     containing it; alphabetical inside each rank (the caches are pre-sorted);
+     capped at 8. An empty query yields the first 8 alphabetical values. */
+  function computeSuggestions(col, query) {
+    var q = query.trim().toLowerCase();
+    var starts = [], contains = [];
+    var i;
+    if (col === "country") {
+      for (i = 0; i < sugCache.country.length; i++) {
+        var c = sugCache.country[i];
+        if (chipHas(col, c.code)) continue;
+        if (!q) { starts.push({ value: c.code, html: countryOptionHTML(c, q) }); continue; }
+        var ch = c.code.toLowerCase().indexOf(q);
+        var nh = c.name ? c.name.toLowerCase().indexOf(q) : -1;
+        if (ch === -1 && nh === -1) continue;
+        var opt = { value: c.code, html: countryOptionHTML(c, q) };
+        if (ch === 0 || nh === 0) starts.push(opt); else contains.push(opt);
+      }
+    } else {
+      for (i = 0; i < sugCache[col].length; i++) {
+        var v = sugCache[col][i];
+        if (chipHas(col, v)) continue;
+        if (!q) { starts.push({ value: v, html: esc(v) }); continue; }
+        var hit = v.toLowerCase().indexOf(q);
+        if (hit === -1) continue;
+        var opt2 = { value: v, html: boldHTML(v, q) };
+        if (hit === 0) starts.push(opt2); else contains.push(opt2);
+      }
+    }
+    return starts.concat(contains).slice(0, 8);
+  }
+
+  /* Mouse: mousedown keeps the input focused; click commits; hover activates */
+  dd.addEventListener("mousedown", function (e) {
+    if (e.target.closest && e.target.closest(".ac-item")) e.preventDefault();
+  });
+  dd.addEventListener("click", function (e) {
+    var item = e.target.closest ? e.target.closest(".ac-item") : null;
+    if (!item || ddCol === null) return;
+    var i = parseInt(item.dataset.i, 10);
+    if (!isNaN(i) && ddItems[i]) commitChip(ddCol, ddItems[i].value);
+  });
+  dd.addEventListener("mousemove", function (e) {
+    var item = e.target.closest ? e.target.closest(".ac-item") : null;
+    if (!item || ddCol === null) return;
+    var i = parseInt(item.dataset.i, 10);
+    if (!isNaN(i) && i !== ddActive) { ddActive = i; markActive(); }
+  });
+  /* Anywhere else: close. Inside the dropdown or its own chip box: keep. */
+  document.addEventListener("mousedown", function (e) {
+    if (ddCol === null) return;
+    if (dd.contains(e.target)) return;
+    if (chipBoxes[ddCol].box.contains(e.target)) return;
+    closeSuggest();
   });
 
   /* ---------------- Clear-all-filters button ---------------- */
@@ -759,7 +1266,7 @@
   }
   function clearAllFilters() {
     search.value = "";
-    updateClearBtn();
+    closeSuggest();
     resetFilters();
     wrap.scrollTop = 0;
     render();
@@ -804,11 +1311,11 @@
   function applyPlaylist(text, name) {
     items    = parseM3U(text);
     fileName = name;
-    prepareItems(items); /* lowercase haystacks + stats, once per load */
+    prepareItems(items); /* haystacks, country names, stats + suggestion caches */
     resort();            /* rebuild the cached sorted view */
     search.value = "";
-    updateClearBtn();
-    resetFilters();
+    closeSuggest();
+    resetFilters();      /* clears text filters and every chip */
     wrap.scrollTop = 0;
     updateView();
     emptyMsg.innerHTML = items.length ? emptyDefaultHTML :
