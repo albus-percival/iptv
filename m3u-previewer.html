@@ -176,14 +176,36 @@
   td.cell-name  { font-weight: 500; }
   td.cell-group { color: var(--muted); }
   td.cell-country, td.cell-language { color: var(--muted); }
-  td.cell-url {
-    font-family: Consolas, "SF Mono", Menlo, monospace; font-size: 12px;
-    color: var(--muted); cursor: pointer;
+  .cell-name-button {
+    display: block; width: 100%; overflow: hidden; padding: 0; border: 0;
+    background: transparent; color: inherit; text-align: left;
+    text-overflow: ellipsis; font: inherit;
   }
-  td.cell-url:hover { color: var(--accent); }
-  td.cell-logo  { text-align: center; }
-  .cell-logo img { max-height: 24px; max-width: 72px; vertical-align: middle; }
+  .cell-name-button:hover { background: transparent; color: var(--accent); text-decoration: underline; }
+  .cell-name-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .url-content { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .url-action {
+    flex: 0 0 auto; padding: 2px 5px; border-radius: 5px; font-size: 11px;
+    line-height: 1.3;
+  }
+  .url-action svg { display: block; width: 14px; height: 14px; }
+  .url-text {
+    min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    font: 12px Consolas, "SF Mono", Menlo, monospace; color: var(--muted);
+  }
+  td.cell-logo { text-align: center; }
+  .cell-logo img { max-height: 24px; max-width: 72px; vertical-align: middle; cursor: zoom-in; }
   .nologo { color: var(--border); font-weight: 700; }
+  #logoPreview {
+    position: fixed; z-index: 40; padding: 6px; pointer-events: none;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .3);
+  }
+  #logoPreview[hidden] { display: none; }
+  #logoPreview img {
+    display: block; max-width: min(320px, calc(100vw - 32px));
+    max-height: min(240px, calc(100vh - 32px)); object-fit: contain; border-radius: 4px;
+  }
 
   /* Virtualized rows: fixed row height (kept in sync with ROW_H in the script);
      spacer rows carry no padding/border so their height is exact */
@@ -220,6 +242,27 @@
   #urlDialog menu { display: flex; justify-content: flex-end; gap: 8px; margin: 16px 0 0; padding: 0; }
   #urlOk { background: var(--accent); border-color: var(--accent); color: var(--bg); }
   #urlOk:hover { background: var(--accent); filter: brightness(1.08); }
+
+  /* Channel details dialog */
+  #detailDialog { width: min(720px, calc(100vw - 32px)); }
+  #detailDialog h3 { margin: 0; padding: 20px 24px 0; font-size: 17px; }
+  #detailFields {
+    display: grid; grid-template-columns: minmax(110px, 1fr) 3fr;
+    gap: 8px 16px; padding: 16px 24px 20px;
+  }
+  #detailFields dt { color: var(--muted); font-weight: 600; }
+  #detailFields dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+  .detail-value-row { display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
+  .detail-value { flex: 1; min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .detail-copy { align-self: flex-start; }
+  #detailFields .detail-logo {
+    display: block; max-width: 180px; max-height: 100px; margin-top: 8px; object-fit: contain;
+  }
+  #detailDialog footer {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 12px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .detail-copy-all { display: flex; flex-wrap: wrap; gap: 8px; }
 
   /* "Help / About" dialog */
   #helpDialog { width: min(780px, calc(100vw - 40px)); }
@@ -294,6 +337,9 @@
        coarse-pointer sizing, not shrinks below it). */
     .btn-label { display: none; }
     #openBtn, #openUrlBtn { padding: 10px 10px; }
+    #detailFields { grid-template-columns: 1fr; gap: 4px; padding: 14px 16px; }
+    #detailDialog h3 { padding: 16px 16px 0; }
+    #detailDialog footer { padding: 10px 16px; }
   }
   @media (pointer: coarse) {
     /* Touch: comfortable hit areas; 8px resize strips are unusable with fingers */
@@ -326,6 +372,7 @@
 </section>
 
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="logoPreview" hidden aria-hidden="true"><img alt=""></div>
 
 <dialog id="urlDialog" aria-labelledby="urlDialogTitle">
   <form id="urlForm">
@@ -369,8 +416,8 @@
       <li>Press <kbd>/</kbd> to jump to the global search box; <kbd>Esc</kbd> clears it.</li>
       <li>Each column header has its own filter input (<kbd>Esc</kbd> clears the focused one;
           <kbd>Enter</kbd> dismisses it); the in-box <b>&#10005;</b> clears it with one click.</li>
-      <li>The <b>Group</b>, <b>Country</b> and <b>Language</b> headers offer suggestion
-          dropdowns: type to search or click to browse the playlist's values, then press
+      <li>The <b>Group</b>, <b>Country</b> and <b>Language</b> headers offer scrollable
+          suggestions containing all available values: type to search or click to browse, then press
           <kbd>Enter</kbd> (or click a suggestion) to add it as a chip.
           <kbd>&#8593;</kbd> / <kbd>&#8595;</kbd> pick a suggestion,
           <kbd>Esc</kbd> first closes the dropdown, then clears the typed text.</li>
@@ -387,7 +434,9 @@
       <li>Click a column title to sort; click again to reverse the order.</li>
       <li>Drag the thin handle on a header's right edge to resize that column (desktop
           only); double-click the handle to restore its default width. Your layout is remembered.</li>
-      <li>Click any URL cell to copy it to the clipboard.</li>
+      <li>Use the buttons in a URL cell to copy its URL or open it in a new tab; click a
+          channel name for its full details and copy its name, ID, stream URL, or the open item
+          as M3U or JSON; hover a logo to enlarge it.</li>
       <li>Large playlists are rendered virtually &mdash; only the rows currently in view
           exist in the page, so even 20,000-channel lists scroll and filter smoothly.</li>
     </ul>
@@ -398,6 +447,18 @@
     </ul>
   </div>
   <footer><button id="helpClose" type="button">Close</button></footer>
+</dialog>
+
+<dialog id="detailDialog" aria-labelledby="detailTitle">
+  <h3 id="detailTitle">Channel details</h3>
+  <dl id="detailFields"></dl>
+  <footer>
+    <div class="detail-copy-all">
+      <button id="copyDetailsM3uBtn" type="button">Copy item as M3U</button>
+      <button id="copyDetailsJsonBtn" type="button">Copy item as JSON</button>
+    </div>
+    <button id="detailClose" type="button">Close</button>
+  </footer>
 </dialog>
 
 <div id="wrap">
@@ -490,6 +551,8 @@
   var tbody    = document.getElementById("tbody");
   var wrap     = document.getElementById("wrap");
   var table    = document.getElementById("table");
+  var logoPreview = document.getElementById("logoPreview");
+  var logoPreviewImage = logoPreview.querySelector("img");
   var emptyBox = document.getElementById("empty");
   var emptyMsg = emptyBox.querySelector("p");
   var search   = document.getElementById("search");
@@ -502,6 +565,9 @@
   var urlInput   = document.getElementById("urlInput");
   var urlForm    = document.getElementById("urlForm");
   var helpDialog = document.getElementById("helpDialog");
+  var detailDialog = document.getElementById("detailDialog");
+  var detailFields = document.getElementById("detailFields");
+  var detailItem = null;
   var colFilters  = document.querySelectorAll("input.col-filter, input.chip-input");
   /* Single-value column filters are strings; group/country/language hold
      arrays of committed chips (union-matched inside computeVisible) */
@@ -537,6 +603,14 @@
       }[c];
     });
   };
+  var COPY_ICON_HTML = "<svg viewBox='0 0 16 16' aria-hidden='true' focusable='false'>" +
+    "<rect x='5' y='5' width='10' height='10' rx='1' fill='none' stroke='currentColor' stroke-width='1.5'/>" +
+    "<path d='M11 3V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h1' fill='none' stroke='currentColor' stroke-width='1.5'/>" +
+    "</svg>";
+  var OPEN_ICON_HTML = "<svg viewBox='0 0 16 16' aria-hidden='true' focusable='false'>" +
+    "<path d='M9 2h5v5M14 2 7 9' fill='none' stroke='currentColor' stroke-width='1.5'/>" +
+    "<path d='M12 9v4a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h4' fill='none' stroke='currentColor' stroke-width='1.5'/>" +
+    "</svg>";
 
   /* Derive country code from tvg-id suffix (e.g. "AnimaxAsia.sg" -> "SG") */
   function countryOf(id) {
@@ -589,6 +663,13 @@
     return String(value).split(",").map(langToken).filter(Boolean).join(", ");
   }
 
+  function decodeM3UAttribute(value) {
+    var entities = { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">" };
+    return String(value).replace(/&(amp|quot|apos|lt|gt);/gi, function (match, name) {
+      return entities[name.toLowerCase()];
+    });
+  }
+
   /* ---------------- M3U parsing ---------------- */
   function parseM3U(text) {
     var lines = text.split(/\r?\n/);
@@ -609,7 +690,7 @@
         }
         var attrs = {}, attrPart = ci >= 0 ? line.slice(0, ci) : line;
         attrRe.lastIndex = 0;
-        while ((m = attrRe.exec(attrPart))) attrs[m[1].toLowerCase()] = m[2];
+        while ((m = attrRe.exec(attrPart))) attrs[m[1].toLowerCase()] = decodeM3UAttribute(m[2]);
         cur = {
           id:      attrs["tvg-id"] || "",
           name:    (ci >= 0 ? line.slice(ci + 1) : "").trim() || attrs["tvg-name"] || "",
@@ -765,6 +846,43 @@
   var ROW_H = 36;      /* matches "tbody tr.vrow td" height; verified by measurement */
   var OVERSCAN = 6;
   var rowHMeasured = false;
+  var logoPreviewSource = null;
+
+  function positionLogoPreview() {
+    if (!logoPreviewSource || logoPreview.hidden) return;
+    var sourceRect = logoPreviewSource.getBoundingClientRect();
+    var previewRect = logoPreview.getBoundingClientRect();
+    var margin = 8;
+    var left = sourceRect.right + margin;
+    if (left + previewRect.width > window.innerWidth - margin) {
+      left = sourceRect.left - previewRect.width - margin;
+    }
+    left = Math.max(margin, Math.min(left, window.innerWidth - previewRect.width - margin));
+    var top = sourceRect.top + (sourceRect.height - previewRect.height) / 2;
+    top = Math.max(margin, Math.min(top, window.innerHeight - previewRect.height - margin));
+    logoPreview.style.left = left + "px";
+    logoPreview.style.top = top + "px";
+  }
+  function hideLogoPreview() {
+    logoPreviewSource = null;
+    logoPreview.hidden = true;
+    logoPreviewImage.removeAttribute("src");
+  }
+  function showLogoPreview(img) {
+    logoPreviewSource = img;
+    logoPreviewImage.src = img.currentSrc || img.src;
+    logoPreview.hidden = false;
+    positionLogoPreview();
+  }
+  logoPreviewImage.addEventListener("load", positionLogoPreview);
+  logoPreviewImage.addEventListener("error", hideLogoPreview);
+  tbody.addEventListener("mouseover", function (e) {
+    var img = e.target.closest ? e.target.closest("td.cell-logo img") : null;
+    if (img) showLogoPreview(img);
+  });
+  tbody.addEventListener("mouseout", function (e) {
+    if (e.target.closest && e.target.closest("td.cell-logo img")) hideLogoPreview();
+  });
 
   function padRow(px) {
     return "<tr class='vpad'><td colspan='7' style='height:" + Math.round(px) + "px'></td></tr>";
@@ -773,11 +891,20 @@
   function rowHTML(it, i) {
     return "<tr class='vrow'>"
       + "<td class='cell-id'>" + esc(it.id || i + 1) + "</td>"
-      + "<td class='cell-name' title=\"" + esc(it.name) + "\">" + esc(it.name) + "</td>"
+      + "<td class='cell-name' title=\"" + esc(it.name) + "\">"
+      + "<button class='cell-name-button' type='button' data-index=\"" + i + "\""
+      + " aria-label=\"Show details for " + esc(it.name) + "\">" + esc(it.name) + "</button></td>"
       + "<td class='cell-group' title=\"" + esc(it.group) + "\">" + esc(it.group) + "</td>"
       + "<td class='cell-country'>" + esc(it.country || "\u2014") + "</td>"
       + "<td class='cell-language'>" + esc(it.language || "\u2014") + "</td>"
-      + "<td class='cell-url' data-url=\"" + esc(it.url) + "\" title=\"" + esc(it.url) + "\">" + esc(it.url) + "</td>"
+      + "<td class='cell-url' title=\"" + esc(it.url) + "\"><div class='url-content'>"
+      + (it.url
+          ? "<button class='url-action url-copy' type='button' data-url=\"" + esc(it.url)
+            + "\" title='Copy URL' aria-label='Copy URL'>" + COPY_ICON_HTML + "</button>"
+            + "<button class='url-action url-open' type='button' data-url=\"" + esc(it.url)
+              + "\" title='Open URL in new tab' aria-label='Open URL in new tab'>" + OPEN_ICON_HTML + "</button>"
+          : "")
+      + "<span class='url-text'>" + esc(it.url) + "</span></div></td>"
       + "<td class='cell-logo'>"
       + (it.logo
           ? "<img loading=\"lazy\" alt=\"\" src=\"" + esc(it.logo) + "\" onerror=\"this.outerHTML='<span class=nologo>&middot;</span>'\">"
@@ -786,6 +913,7 @@
   }
 
   function renderWindow() {
+    hideLogoPreview();
     var total = visibleRows.length;
     if (!total) {
       tbody.innerHTML = items.length
@@ -822,6 +950,7 @@
   /* Repaint just the visible window while scrolling (rAF-throttled) */
   var scrollPending = false;
   wrap.addEventListener("scroll", function () {
+    hideLogoPreview();
     /* The suggestion dropdown is fixed to the viewport: user scrolling closes it.
        Programmatic wrapTop0 resets land here as the first event and are consumed. */
     if (ddScrollLock) ddScrollLock = false;
@@ -834,7 +963,7 @@
     });
   });
   /* Viewport (or wrap layout) changed: recompute the visible window */
-  window.addEventListener("resize", function () { renderWindow(); positionSuggest(); });
+  window.addEventListener("resize", function () { renderWindow(); positionSuggest(); positionLogoPreview(); });
 
   function updateStats() {
     stats.textContent =
@@ -1203,8 +1332,7 @@
     return html;
   }
   /* Google-style ranking: values starting with the query first, then values
-     containing it; alphabetical inside each rank (the caches are pre-sorted);
-     capped at 8. An empty query yields the first 8 alphabetical values. */
+     containing it; alphabetical inside each rank (the caches are pre-sorted). */
   function computeSuggestions(col, query) {
     var q = query.trim().toLowerCase();
     var starts = [], contains = [];
@@ -1231,7 +1359,7 @@
         if (hit === 0) starts.push(opt2); else contains.push(opt2);
       }
     }
-    return starts.concat(contains).slice(0, 8);
+    return starts.concat(contains);
   }
 
   /* Mouse: mousedown keeps the input focused; click commits; hover activates */
@@ -1283,7 +1411,7 @@
     clearTimeout(toastT);
     toastT = setTimeout(function () { toastEl.classList.remove("show"); }, ms || 1400);
   }
-  function copyText(t) {
+  function copyText(t, label) {
     function legacy() {
       var ta = document.createElement("textarea");
       ta.value = t;
@@ -1299,11 +1427,126 @@
     } else {
       legacy();
     }
-    toast("\u2713 URL copied to clipboard");
+    toast("\u2713 " + (label || "URL") + " copied to clipboard");
+  }
+  function addDetail(label, value, copyable) {
+    var term = document.createElement("dt");
+    term.textContent = label;
+    var description = document.createElement("dd");
+    var row = document.createElement("span");
+    row.className = "detail-value-row";
+    var text = document.createElement("span");
+    text.className = "detail-value";
+    text.textContent = value || "\u2014";
+    row.appendChild(text);
+    if (value && copyable) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "url-action detail-copy";
+      button.title = "Copy " + label;
+      button.setAttribute("aria-label", button.title);
+      button.dataset.copyValue = value;
+      button.dataset.copyLabel = label;
+      button.innerHTML = COPY_ICON_HTML;
+      row.appendChild(button);
+    }
+    description.appendChild(row);
+    detailFields.appendChild(term);
+    detailFields.appendChild(description);
+    return description;
+  }
+  function detailsM3U(it) {
+    function attr(name, value) {
+      if (!value) return "";
+      var safe = String(value).replace(/[\r\n]/g, " ").replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+      return " " + name + "=\"" + safe + "\"";
+    }
+    var name = String(it.name || "").replace(/[\r\n]/g, " ");
+    var url = String(it.url || "").replace(/[\r\n]/g, " ");
+    return "#EXTM3U\n#EXTINF:-1"
+      + attr("tvg-id", it.id)
+      + attr("tvg-name", it.name)
+      + attr("tvg-logo", it.logo)
+      + attr("group-title", it.group)
+      + attr("tvg-language", it.language_raw)
+      + "," + name + "\n" + url;
+  }
+  function detailsJSON(it) {
+    return JSON.stringify({
+      id: it.id,
+      name: it.name,
+      group: it.group,
+      country: it.country,
+      country_name: it.countryName,
+      language: it.language,
+      language_raw: it.language_raw,
+      logo: it.logo,
+      url: it.url
+    }, null, 2);
+  }
+  function showDetails(it) {
+    detailItem = it;
+    detailFields.textContent = "";
+    document.getElementById("detailTitle").textContent = it.name || "Channel details";
+    addDetail("Name", it.name, true);
+    addDetail("tvg-id", it.id, true);
+    addDetail("Group", it.group);
+    addDetail("Country", it.country
+      ? it.country + (it.countryName ? " \u00B7 " + it.countryName : "")
+      : "");
+    addDetail("Language", it.language);
+    addDetail("Original language", it.language_raw);
+    var logo = addDetail("Logo URL", it.logo);
+    if (it.logo) {
+      var image = document.createElement("img");
+      image.className = "detail-logo";
+      image.alt = it.name ? it.name + " logo" : "Channel logo";
+      image.src = it.logo;
+      logo.appendChild(image);
+    }
+    addDetail("Stream URL", it.url, true);
+    detailDialog.showModal();
   }
   tbody.addEventListener("click", function (e) {
-    var td = e.target.closest ? e.target.closest("td.cell-url") : null;
-    if (td && td.dataset.url) copyText(td.dataset.url);
+    var target = e.target;
+    var nameButton = target.closest ? target.closest("button.cell-name-button") : null;
+    if (nameButton) {
+      var index = parseInt(nameButton.dataset.index, 10);
+      if (!isNaN(index) && visibleRows[index]) showDetails(visibleRows[index]);
+      return;
+    }
+    var copyButton = target.closest ? target.closest("button.url-copy") : null;
+    if (copyButton && copyButton.dataset.url) {
+      copyText(copyButton.dataset.url);
+      return;
+    }
+    var openButton = target.closest ? target.closest("button.url-open") : null;
+    if (openButton && openButton.dataset.url) {
+      var url;
+      try { url = new URL(openButton.dataset.url); }
+      catch (err) { toast("\u2717 Invalid URL", 3000); return; }
+      if (url.protocol !== "http:" && url.protocol !== "https:") {
+        toast("\u2717 Only http:// and https:// URLs can be opened", 3000);
+        return;
+      }
+      window.open(url.href, "_blank", "noopener,noreferrer");
+    }
+  });
+  document.getElementById("detailClose").addEventListener("click", function () {
+    detailDialog.close();
+  });
+  detailDialog.addEventListener("click", function (e) {
+    if (e.target === detailDialog) detailDialog.close();
+  });
+  detailFields.addEventListener("click", function (e) {
+    var button = e.target.closest ? e.target.closest("button.detail-copy") : null;
+    if (button) copyText(button.dataset.copyValue, button.dataset.copyLabel);
+  });
+  document.getElementById("copyDetailsM3uBtn").addEventListener("click", function () {
+    if (detailItem) copyText(detailsM3U(detailItem), "M3U details");
+  });
+  document.getElementById("copyDetailsJsonBtn").addEventListener("click", function () {
+    if (detailItem) copyText(detailsJSON(detailItem), "JSON details");
   });
 
   /* ---------------- Playlist loading (file / URL) ---------------- */
