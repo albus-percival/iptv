@@ -1,5 +1,5 @@
 #EXTM3U
-# Playlist generated on [18-Nov-2026] (timestamps in IST)
+# Playlist generated on [20-Nov-2026] (timestamps in IST)
 #EXTINF:-1 tvg-id="3ABNKids.us@Animation" tvg-name="3ABN Kids" tvg-logo="https://i.imgur.com/z3npqO1.png" tvg-language="English" group-title="Animation",3ABN Kids [720p] (US - English)
 https://3abn.bozztv.com/3abn2/Kids_live/smil:Kids_live.smil/playlist.m3u8
 #EXTINF:-1 tvg-id="AnimationPlus.us" tvg-name="Animation+" tvg-logo="https://i.imgur.com/OIFK6JB.png" tvg-language="English" group-title="Animation",Animation+ [1080p] (US - English)
@@ -416,6 +416,8 @@ https://ndtvprofit.akamaized.net/hls/live/2107404/ndtvprofit/chunklist_5.m3u8
 https://cdn.pishow.tv/ott/live/1287/master.m3u8
 #EXTINF:-1 tvg-id="SchwabNetwork.us" tvg-name="Schwab Network" tvg-logo="https://i.imgur.com/zmQnKV6.png" tvg-language="English" group-title="Business",Schwab Network [1080p] (US - English)
 https://content.uplynk.com/channel/f9aafa1f132e40af9b9e7238bc18d128.m3u8
+#EXTINF:-1 tvg-id="TheBonus.in" tvg-name="The Bonus" tvg-logo="https://cdn.neotvapp.com/file/quickfox/top-tv/channels/bonus-1792417058870.jpg" tvg-language="Hindi" group-title="Business",The Bonus [1080p] (IN - Hindi)
+https://stream.ottlive.co.in/thebonus/index.m3u8
 #EXTINF:-1 tvg-id="YahooFinance.us" tvg-name="Yahoo! Finance" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Yahoo_Finance.png" tvg-language="English" group-title="Business",Yahoo! Finance [1080p] (US - English)
 https://d1ewctnvcwvvvu.cloudfront.net/playlist.m3u8
 #EXTINF:-1 tvg-id="YahooFinance.us@Business" tvg-name="Yahoo! Finance" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Yahoo_Finance.png" tvg-language="English" group-title="Business",Yahoo! Finance [1080p] (US - English)
@@ -1922,6 +1924,8 @@ https://jmp2.uk/plu-6661f11a41af6400080e90d8.m3u8
 https://live-blaze-ssai.simplestreamcdn.com/v1/master/774d979dd66704abea7c5b62cb34c6815fda0d35/blaze-live-broadcast-scte/index.m3u8
 #EXTINF:-1 tvg-id="Boligjakten.se" tvg-name="Boligjakten" tvg-logo="https://images.pluto.tv/channels/61c1dc21b9587d0007e3fc15/colorLogoPNG.png" tvg-language="English,Norwegian" group-title="Entertainment",Boligjakten (SE - English, Norwegian)
 https://jmp2.uk/plu-61c1dc21b9587d0007e3fc15.m3u8
+#EXTINF:-1 tvg-id="BollywoodMasala.in" tvg-name="Bollywood Masala" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/bollywoodmasala.png" tvg-language="Hindi" group-title="Entertainment",Bollywood Masala [1080p] (IN - Hindi)
+https://lamhas.net/bollywoodmasala/index.m3u8
 #EXTINF:-1 tvg-id="BondiRescue.us" tvg-name="Bondi Rescue" tvg-logo="https://images.pluto.tv/channels/66166989635c7500084105a2/colorLogoPNG.png" tvg-language="English" group-title="Entertainment",Bondi Rescue [720p] (US - English)
 https://jmp2.uk/plu-66166989635c7500084105a2.m3u8
 #EXTINF:-1 tvg-id="BotflixTV.us" tvg-name="Botflix TV" tvg-logo="https://botflix.tv/assets/img/botflix-mark.90c6a6f9a4.webp" tvg-language="English" group-title="Entertainment",Botflix TV [1080p] (US - English)
@@ -3813,6 +3817,8 @@ https://glorystartv.live/Overcomers/index.m3u8
 https://rumble.com/live-hls/79qjh2/playlist.m3u8
 #EXTINF:-1 tvg-id="PacificIslandNetwork.us" tvg-name="Pacific Island Network" tvg-logo="https://i.imgur.com/OtT1qYE.png" tvg-language="English" group-title="General",Pacific Island Network [1080p] (US - English)
 https://cdn.vegasplus.us/vegas/mpin/playlist.m3u8
+#EXTINF:-1 tvg-id="ParvasiTV.in" tvg-name="Parvasi TV" tvg-logo="https://d229kpbsb5jevy.cloudfront.net/yupptvnew/content/common/channel/logos/ajzsbi.png" tvg-language="Hindi" group-title="General",Parvasi TV [720p] (IN - Hindi)
+https://yuppnimrestreammum.akamaized.net/181224/smil:pravasi.smil/playlist.m3u8?hdnts=st=1735898689~exp=1835898688~acl=*~hmac=f5fe24724fe05481e3841f9eb5ab8efdee0a3dd83645ae9dcf45703f525bab7b
 #EXTINF:-1 tvg-id="PCTChannel26.us" tvg-name="PCT Channel 26" tvg-logo="https://i.imgur.com/xJSya25.png" tvg-language="English,Spanish" group-title="General",PCT Channel 26 [720p] (US - English, Spanish)
 https://livestream.telvue.com/pacificaca2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8
 #EXTINF:-1 tvg-id="PCTChannel27.us" tvg-name="PCT Channel 27" tvg-logo="https://i.imgur.com/b0ufMkd.png" tvg-language="English,Spanish" group-title="General",PCT Channel 27 [720p] (US - English, Spanish)
@@ -3993,6 +3999,10 @@ https://oqgdro3xd4rm-hls-live.5centscdn.com/tfmediacastlivestreamUTV/8f263182c36
 https://vallejo.cablecast.tv/live-3/live/live.m3u8
 #EXTINF:-1 tvg-id="VegasLifeTV.us" tvg-name="Vegas Life TV" tvg-logo="https://i.imgur.com/G7lONcu.png" tvg-language="English,Tagalog" group-title="General",Vegas Life TV [1080p] (US - English, Tagalog)
 https://cdn.vegasplus.us/vegas/vltv/playlist.m3u8
+#EXTINF:-1 tvg-id="ViiMEDIA.in" tvg-name="Vii MEDIA" tvg-logo="https://yt3.googleusercontent.com/UYTVPDOHTs9b-v1h2pAUHC_e8I_QRTUITTutft_5hOGC2YLL2-jtgD0xaSWZGOfWjmXKjL3AexE=s1200" tvg-language="Hindi" group-title="General",Vii MEDIA [1080p] (IN - Hindi)
+https://viimedia.akamaized.net/viimedia/master.m3u8
+#EXTINF:-1 tvg-id="ViiMEDIA.in@General" tvg-name="Vii MEDIA" tvg-logo="https://yt3.googleusercontent.com/UYTVPDOHTs9b-v1h2pAUHC_e8I_QRTUITTutft_5hOGC2YLL2-jtgD0xaSWZGOfWjmXKjL3AexE=s1200" tvg-language="Hindi" group-title="General",Vii MEDIA [720p] (IN - Hindi)
+https://viimediacdn.wiseplayout.com/viimedia/master.m3u8
 #EXTINF:-1 tvg-id="VSCTV.us" tvg-name="VSCTV" tvg-logo="https://i.imgur.com/cn6pAEZ.png" tvg-language="English" group-title="General",VSCTV [1080p] (US - English)
 https://reflect-vsctv.cablecast.tv/live-3/live/live.m3u8
 #EXTINF:-1 tvg-id="WaffiTV.ng" tvg-name="Waffi TV" tvg-logo="https://i.imgur.com/3uEuzVH.jpeg" tvg-language="English" group-title="General",Waffi TV [240p] (NG - English)
@@ -4205,6 +4215,9 @@ https://5f22d76e220e1.streamlock.net/iuniortv/iuniortv/playlist.m3u8
 #EXTINF:-1 tvg-id="JimJam.hu" tvg-name="JimJam" tvg-logo="https://i.imgur.com/ODhkYyx.png" tvg-language="Hungarian,English" group-title="Kids",JimJam (HU - Hungarian, English)
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
 http://88.212.7.14/live/jim_jam_hun/index.m3u8
+#EXTINF:-1 tvg-id="JimJam.ro" tvg-name="JimJam" tvg-logo="https://i.imgur.com/ODhkYyx.png" tvg-language="English,Romanian" group-title="Kids",JimJam [576p] (RO - English, Romanian)
+#EXTVLCOPT:http-referrer=https://canale-tv.net/
+https://rundle.tv/proxy5.php?src=https%3A%2F%2Fsaruman1.tharen001.cfd%2Fjimy%2Fusergenq3n0lz7kr-got.htm
 #EXTINF:-1 tvg-id="JimJamEurope.uk" tvg-name="JimJam Europe" tvg-logo="https://i.imgur.com/ODhkYyx.png" tvg-language="English,Portuguese,Czech,Slovak,Hebrew" group-title="Kids",JimJam Europe [720p] (UK - English, Portuguese, Czech, Slovak, Hebrew)
 http://212.5.144.156:8080/jimjam/index.m3u8
 #EXTINF:-1 tvg-id="JimJamEurope.uk@Kids" tvg-name="JimJam Europe" tvg-logo="https://i.imgur.com/ODhkYyx.png" tvg-language="English,Portuguese,Czech,Slovak,Hebrew" group-title="Kids",JimJam Europe [576p] (UK - English, Portuguese, Czech, Slovak, Hebrew)
@@ -4445,8 +4458,6 @@ https://jmp2.uk/plu-61c0ba0816e2fd00086cb6b1.m3u8
 https://jmp2.uk/plu-61c09ac98a80a4000703f992.m3u8
 #EXTINF:-1 tvg-id="SvampeBobFirkant.se@Kids" tvg-name="SvampeBob Firkant" tvg-logo="https://images.pluto.tv/channels/61c09ac98a80a4000703f992/colorLogoPNG.png" tvg-language="English,Norwegian" group-title="Kids",SvampeBob Firkant [720p] (SE - English, Norwegian)
 https://jmp2.uk/plu-61c1d59a244e500007581861.m3u8
-#EXTINF:-1 tvg-id="TeenNick.il" tvg-name="TeenNick" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/TeenNick_logo_2023_%28outline%29.svg/1280px-TeenNick_logo_2023_%28outline%29.svg.png" tvg-language="English" group-title="Kids",TeenNick [406p] (IL - English)
-http://89.33.29.115:8080/TeenNick/index.m3u8
 #EXTINF:-1 tvg-id="TeenNick.pl" tvg-name="TeenNick" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/TeenNick_logo_2023_%28outline%29.svg/1280px-TeenNick_logo_2023_%28outline%29.svg.png" tvg-language="English" group-title="Kids",TeenNick [576i] (PL - English)
 http://92.114.85.87:8010/play/a009/index.m3u8
 #EXTINF:-1 tvg-id="TeenNick.us" tvg-name="TeenNick" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/TeenNick_logo_2023_%28outline%29.svg/1280px-TeenNick_logo_2023_%28outline%29.svg.png" tvg-language="English" group-title="Kids",TeenNick [432p] (US - English)
@@ -4826,6 +4837,8 @@ https://uptv-aspiretvlife-klowdtv.amagi.tv/playlist.m3u8
 https://cb0c87cc605942ff9766a4e6744bbadc.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RlaxxTV-eu_AutenticTravel/playlist.m3u8
 #EXTINF:-1 tvg-id="AutenticTravel.de@Lifestyle" tvg-name="Autentic Travel" tvg-logo="https://i.imgur.com/g1V9OH3.png" tvg-language="English" group-title="Lifestyle",Autentic Travel [720p] (DE - English)
 https://autentic-autentictravel-1-gb.samsung.wurl.tv/playlist.m3u8
+#EXTINF:-1 tvg-id="AyushNextCommunicationNetwork.in" tvg-name="Ayush Next Communication Network" tvg-logo="https://i.imgur.com/g68oamL.jpeg" tvg-language="Hindi" group-title="Lifestyle",Ayush Next Communication Network [576p] (IN - Hindi)
+https://d2lk5u59tns74c.cloudfront.net/out/v1/60ab07b02a2942498cdd81f045a625a1/index.m3u8
 #EXTINF:-1 tvg-id="BBCHomeGarden.us" tvg-name="BBC Home & Garden" tvg-logo="https://i.imgur.com/rC0pi1D.png" tvg-language="English" group-title="Lifestyle",BBC Home & Garden [1080p] (US - English)
 https://d11r33s5i066xh.cloudfront.net/playlist.m3u8
 #EXTINF:-1 tvg-id="BetterHealthTV.us" tvg-name="Better Health TV" tvg-logo="https://i.imgur.com/qnwJiji.png" tvg-language="English" group-title="Lifestyle",Better Health TV [480p] (US - English)
@@ -5610,6 +5623,10 @@ https://d393sxaxig6bax.cloudfront.net/out/v1/589cf2cf44bf42bb941e817a2240d62e/in
 https://fta.ektv.in/live/49/49_0.m3u8
 #EXTINF:-1 tvg-id="ShubhCinemaTV.in@Movies#2" tvg-name="Shubh Cinema TV" tvg-logo="https://i.imgur.com/RQhorAG.png" tvg-language="Hindi" group-title="Movies",Shubh Cinema TV [576p] (IN - Hindi)
 https://mumt03.tangotv.in/Dsly5z3HSHUBHCINEMA/index.m3u8
+#EXTINF:-1 tvg-id="SkyShowtime1.ro" tvg-name="SkyShowtime 1" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/a/a0/SkyShowtime_1.svg/revision/latest?cb=20220920074626" tvg-language="English,Romanian" group-title="Movies",SkyShowtime 1 (RO - English, Romanian)
+https://rundle.tv/proxy5.php?src=https%3A%2F%2Fthor1.syndula001.cfd%2Fschi1%2Fusergendxn430rnd-got.htm
+#EXTINF:-1 tvg-id="SkyShowtime2.ro" tvg-name="SkyShowtime 2" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/0/09/SkyShowtime_2.svg/revision/latest?cb=20220920074646" tvg-language="English,Romanian" group-title="Movies",SkyShowtime 2 (RO - English, Romanian)
+https://rundle.tv/proxy5.php?src=https%3A%2F%2Fthor1.syndula001.cfd%2Fschi2%2Fusergendxj85trnd-got.htm
 #EXTINF:-1 tvg-id="SonyMovies.us" tvg-name="Sony Movies" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Sony_Movies_Logo.svg/500px-Sony_Movies_Logo.svg.png" tvg-language="English" group-title="Movies",Sony Movies [720p] (US - English)
 https://a-cdn.klowdtv.com/live1/smc_720p/playlist.m3u8
 #EXTINF:-1 tvg-id="SonyWah.in" tvg-name="Sony Wah" tvg-logo="https://raw.githubusercontent.com/m3u-iptv/live/refs/heads/main/Images/Sony_Wah.png" tvg-language="Hindi" group-title="Movies",Sony Wah [576p] (IN - Hindi)
@@ -5903,6 +5920,8 @@ https://live20.bozztv.com/akamaissh101/ssh101/gextvaccess/playlist.m3u8
 https://livechannel.mdc.akamaized.net/stitch/livechannel/1341/master1400000.m3u8;session=live_stream_1341
 #EXTINF:-1 tvg-id="HappyRadioTV.ua" tvg-name="Happy Radio TV" tvg-logo="https://i.imgur.com/PAw36qJ.png" tvg-language="English" group-title="Music",Happy Radio TV [1080p] (UA - English)
 https://tv.mediacp.eu:8081/happyradio/index.m3u8
+#EXTINF:-1 tvg-id="HareKrsnaMusic.in@Music" tvg-name="Hare Krsna Music" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Hare_Krsna_music.png" tvg-language="Hindi" group-title="Music",Hare Krsna Music [1080p] (IN - Hindi)
+https://d1y1fq5zo7b6pt.cloudfront.net/v1/master/071c0467fcd02420cdf0d8a1ca3524b96c27a151/hkmusic/HKTV/HKMusic/playlist.m3u8
 #EXTINF:-1 tvg-id="HarmonyGospelMusicTV.us@Music" tvg-name="Harmony Gospel Music TV" tvg-logo="https://i.imgur.com/iDiGBE3.png" tvg-language="English" group-title="Music",Harmony Gospel Music TV [1080p] (US - English)
 https://tgn.bozztv.com/watc57/watc57-harmony/watc57-harmony/index.m3u8
 #EXTINF:-1 tvg-id="HeartRadioAruba.aw" tvg-name="Heart Radio Aruba" tvg-logo="https://i.imgur.com/MKZCskA.png" tvg-language="Dutch,Papiamento,English" group-title="Music",Heart Radio Aruba (AW - Dutch, Papiamento, English)
@@ -8352,6 +8371,12 @@ https://mumt03.tangotv.in/Dsly5z3HAWAKENINGTV/index.m3u8
 https://tgn.bozztv.com/betterlife/betterlife/betterlife/index.m3u8
 #EXTINF:-1 tvg-id="BhaktiDhara.in" tvg-name="Bhakti Dhara" tvg-logo="https://papaji.freetvindia.com/media/channels/Bhakti_dhara1.png" tvg-language="Hindi" group-title="Religious",Bhakti Dhara [720p] (IN - Hindi)
 https://newsliveindia.com:4433/bhaktidhara/index.m3u8
+#EXTINF:-1 tvg-id="BhaktiPlay.in" tvg-name="Bhakti Play" tvg-logo="https://bhaktiplay.com/images/icons/logo.png" tvg-language="Hindi" group-title="Religious",Bhakti Play [1080p] (IN - Hindi)
+https://cc-pisq3rszc5kpz.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-pisq3rszc5kpz/OTM/OTM_BhaktiFlix-SCTE_SAMSUNG/playlist.m3u8
+#EXTINF:-1 tvg-id="BhaktiPlay.in@Religious" tvg-name="Bhakti Play" tvg-logo="https://bhaktiplay.com/images/icons/logo.png" tvg-language="Hindi" group-title="Religious",Bhakti Play [1080p] (IN - Hindi)
+https://onetakemedia.vgcdn.net/vglive-sk-548610/playlist.m3u8
+#EXTINF:-1 tvg-id="BhaktiPlay.in@Religious#2" tvg-name="Bhakti Play" tvg-logo="https://bhaktiplay.com/images/icons/logo.png" tvg-language="Hindi" group-title="Religious",Bhakti Play [1080p] (IN - Hindi)
+https://qn-01273-mum-2-07-1---7247-gbsv.http.global.dns.qwilted-cds.cqloud.com/OTM/OTM_BhaktiFlix-SCTE_CDN/playlist.m3u8
 #EXTINF:-1 tvg-id="BhaktiSagar.in" tvg-name="Bhakti Sagar" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Bhaktisagar.png" tvg-language="Hindi" group-title="Religious",Bhakti Sagar [576p] (IN - Hindi)
 https://mumt05.tangotv.in/87NeALx2BHAKTISAGAR/index.m3u8
 #EXTINF:-1 tvg-id="BlessTV.jm" tvg-name="Bless TV" tvg-logo="https://i.imgur.com/USshSMj.png" tvg-language="English" group-title="Religious",Bless TV [1080p] (JM - English)
@@ -8553,21 +8578,29 @@ https://streamer1.nexgen.bz/GUADALUPE_MEDIA/index.m3u8
 https://jk3lzqq4lw79-hls-live.5centscdn.com/gugudde/c9a1fdac6e082dd89e7173244f34d7b3.sdp/chunks.m3u8
 #EXTINF:-1 tvg-id="GurSikhSabhaTV.ca" tvg-name="GurSikh Sabha TV" tvg-logo="https://i.imgur.com/2EKCtQm.png" tvg-language="Hindi" group-title="Religious",GurSikh Sabha TV [720p] (CA - Hindi)
 http://cdn12.henico.net:8080/live/gsctv/index.m3u8
+#EXTINF:-1 tvg-id="HareKrsnaMusic.in" tvg-name="Hare Krsna Music" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Hare_Krsna_music.png" tvg-language="Hindi" group-title="Religious",Hare Krsna Music [1080p] (IN - Hindi)
+https://d1y1fq5zo7b6pt.cloudfront.net/v1/master/071c0467fcd02420cdf0d8a1ca3524b96c27a151/hkmusic/HKTV/HKMusic/playlist.m3u8
+#EXTINF:-1 tvg-id="HareKrsnaPravachan.in" tvg-name="Hare Krsna Pravachan" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Hare_Krsna_Pravachan.png" tvg-language="Hindi" group-title="Religious",Hare Krsna Pravachan [1080p] (IN - Hindi)
+https://dcn72a38509t.cloudfront.net/v1/master/071c0467fcd02420cdf0d8a1ca3524b96c27a151/hkpravachan/HKTV/HKPravachan/playlist.m3u8
 #EXTINF:-1 tvg-id="HareKrsnaTV.in" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [1080p] (IN - Hindi)
+https://de3osy3rc63bo.cloudfront.net/v1/master/071c0467fcd02420cdf0d8a1ca3524b96c27a151/hktv/HKTV/HKWebApp/playlist.m3u8
+#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [1080p] (IN - Hindi)
 https://hktv.harekrsnatv.com/HKTV/HKWebApp/manifest.mpd
-#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [720p] (IN - Hindi)
-https://airtelapp.shemaroo.com/harekrsnatv/smil:harekrsnatvadp.smil/playlist.m3u8
-#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#2" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [720p] (IN - Hindi)
-https://d1y1fq5zo7b6pt.cloudfront.net/v1/master/071c0467fcd02420cdf0d8a1ca3524b96c27a151/hktv/HKTV/HKWebApp/playlist.m3u8
+#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#2" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [1080p] (IN - Hindi)
+https://zenga.hk.harekrsnatv.com/harekrsna/tv/playlist.m3u8
 #EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#3" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [720p] (IN - Hindi)
+https://airtelapp.shemaroo.com/harekrsnatv/smil:harekrsnatvadp.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#4" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [720p] (IN - Hindi)
+https://d1y1fq5zo7b6pt.cloudfront.net/v1/master/071c0467fcd02420cdf0d8a1ca3524b96c27a151/hktv/HKTV/HKWebApp/playlist.m3u8
+#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#5" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [720p] (IN - Hindi)
 https://yuppparoriglin.akamaized.net/181224/smil:harekrishna.smil/playlist.m3u8?hdnts=st=1735898689~exp=1835898688~acl=*~hmac=f5fe24724fe05481e3841f9eb5ab8efdee0a3dd83645ae9dcf45703f525bab7b
-#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#4" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [576p] (IN - Hindi)
+#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#6" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [576p] (IN - Hindi)
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
 https://fta.ektv.in/live/259/master.m3u8
-#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#5" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [576p] (IN - Hindi)
+#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#7" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [576p] (IN - Hindi)
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
 https://fta.ektv.in/live/617/master.m3u8
-#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#6" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [576p] (IN - Hindi)
+#EXTINF:-1 tvg-id="HareKrsnaTV.in@Religious#8" tvg-name="Hare Krsna TV" tvg-logo="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/transparentImages/Hare-Krsna-Logo--without-Bg_2000_X_1125.png" tvg-language="Hindi" group-title="Religious",Hare Krsna TV [576p] (IN - Hindi)
 https://mumt05.tangotv.in/87NeALx2HAREKRSNA/index.m3u8
 #EXTINF:-1 tvg-id="HarmonyGospelMusicTV.us" tvg-name="Harmony Gospel Music TV" tvg-logo="https://i.imgur.com/iDiGBE3.png" tvg-language="English" group-title="Religious",Harmony Gospel Music TV [1080p] (US - English)
 https://tgn.bozztv.com/watc57/watc57-harmony/watc57-harmony/index.m3u8
@@ -8922,6 +8955,8 @@ https://fta.ektv.in/live/627/master.m3u8
 https://mumt03.tangotv.in/Dsly5z3HSHUBHSANDESH/index.m3u8
 #EXTINF:-1 tvg-id="ShubhsandeshTV.in@Religious#3" tvg-name="Shubhsandesh TV" tvg-logo="https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_SHUBHSANDESH_TV/images/LOGO_HD/image.png" tvg-language="Hindi" group-title="Religious",Shubhsandesh TV [720p] (IN - Hindi)
 https://6284rn2xr7xv-hls-live.wmncdn.net/shubhsandeshtv1/live123.stream/index.m3u8
+#EXTINF:-1 tvg-id="SikhRatnavali.in" tvg-name="Sikh Ratnavali" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/channel/9b43911f42d41a830545872837ac58a2.png" tvg-language="Hindi" group-title="Religious",Sikh Ratnavali [1080p] (IN - Hindi)
+https://livetv.kableone.com/hls/live/2111218/SikhRatnavali/master.m3u8
 #EXTINF:-1 tvg-id="SindhTV.in" tvg-name="Sindh TV" tvg-logo="https://papaji.freetvindia.com/media/Sindth_TV.png" tvg-language="Hindi" group-title="Religious",Sindh TV [720p] (IN - Hindi)
 https://samitaorigin.tangotv.in/SINDHTV/SAMITAORIGIN/index.m3u8
 #EXTINF:-1 tvg-id="SohamTV.in" tvg-name="Soham TV" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Soham_TV.png" tvg-language="Hindi" group-title="Religious",Soham TV [576p] (IN - Hindi)
@@ -9820,6 +9855,9 @@ https://jmp2.uk/plu-65660223635c3c00086c2578.m3u8
 https://freecast-lukentvlive.vgcdn.net/out/v1/a4f31f297fc5440f814bd2cffd77e689/index.m3u8
 #EXTINF:-1 tvg-id="REVNAction.us@Series#2" tvg-name="REV'N Action" tvg-logo="https://i.imgur.com/xsm8mMd.png" tvg-language="English" group-title="Series",REV'N Action [720p] (US - English)
 https://lukentvlive.vgcdn.net/v1/master/cef183924f24adfa3d5d7601c3a17769082c0c2b/Revn/index.m3u8
+#EXTINF:-1 tvg-id="SciFi.rs" tvg-name="Sci Fi" tvg-logo="https://i.imgur.com/FPumwfg.png" tvg-language="Serbian,English" group-title="Series",Sci Fi [720p] (RS - Serbian, English)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36
+https://webtvstream.bhtelecom.ba/sci-fi.m3u8
 #EXTINF:-1 tvg-id="Scorpion.de" tvg-name="Scorpion" tvg-logo="https://images.pluto.tv/channels/63d000ef4e83e700086e0d6c/colorLogoPNG.png" tvg-language="English" group-title="Series",Scorpion (DE - English)
 https://jmp2.uk/plu-63d000ef4e83e700086e0d6c.m3u8
 #EXTINF:-1 tvg-id="Scorpion.se" tvg-name="Scorpion" tvg-logo="https://images.pluto.tv/channels/63a1caefc8d285000799e8af/colorLogoPNG.png" tvg-language="English,Danish" group-title="Series",Scorpion (SE - English, Danish)
@@ -10304,11 +10342,13 @@ https://1593604785.rsc.cdn77.org/FTF/FTF_SCTE.m3u8
 https://1657061170.rsc.cdn77.org/HLS/FTF-LINEAR.m3u8
 #EXTINF:-1 tvg-id="FTFSports.us@Sports#2" tvg-name="FTF Sports" tvg-logo="https://i.imgur.com/yvUjOI3.png" tvg-language="English" group-title="Sports",FTF Sports [720p] (US - English)
 https://a-cdn.klowdtv.com/live2/ftf_720p/playlist.m3u8
-#EXTINF:-1 tvg-id="FuboSportsNetwork.us" tvg-name="Fubo Sports Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Fubo_Sports_Network_2023_Logo.webp/960px-Fubo_Sports_Network_2023_Logo.webp.png" tvg-language="English" group-title="Sports",Fubo Sports Network [720p] (US - English)
+#EXTINF:-1 tvg-id="FuboSportsNetwork.us" tvg-name="Fubo Sports Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Fubo_Sports_Network_2023_Logo.webp/960px-Fubo_Sports_Network_2023_Logo.webp.png" tvg-language="English" group-title="Sports",Fubo Sports Network [1080p] (US - English)
+http://107.167.16.138/fubosportsnetwork/index.m3u8?token=test
+#EXTINF:-1 tvg-id="FuboSportsNetwork.us@Sports" tvg-name="Fubo Sports Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Fubo_Sports_Network_2023_Logo.webp/960px-Fubo_Sports_Network_2023_Logo.webp.png" tvg-language="English" group-title="Sports",Fubo Sports Network [720p] (US - English)
 https://aegis-cloudfront-1.tubi.video/c2ac89da-5c69-439e-b85d-d87de0548b54/5.m3u8
-#EXTINF:-1 tvg-id="FuboSportsNetwork.us@Sports" tvg-name="Fubo Sports Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Fubo_Sports_Network_2023_Logo.webp/960px-Fubo_Sports_Network_2023_Logo.webp.png" tvg-language="English" group-title="Sports",Fubo Sports Network [1080p] (US - English)
-https://dnf08l6u6uxnz.cloudfront.net/master.m3u8
 #EXTINF:-1 tvg-id="FuboSportsNetwork.us@Sports#2" tvg-name="Fubo Sports Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Fubo_Sports_Network_2023_Logo.webp/960px-Fubo_Sports_Network_2023_Logo.webp.png" tvg-language="English" group-title="Sports",Fubo Sports Network [1080p] (US - English)
+https://dnf08l6u6uxnz.cloudfront.net/master.m3u8
+#EXTINF:-1 tvg-id="FuboSportsNetwork.us@Sports#3" tvg-name="Fubo Sports Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Fubo_Sports_Network_2023_Logo.webp/960px-Fubo_Sports_Network_2023_Logo.webp.png" tvg-language="English" group-title="Sports",Fubo Sports Network [1080p] (US - English)
 https://aegis-cloudfront-1.tubi.video/c2ac89da-5c69-439e-b85d-d87de0548b54/playlist.m3u8
 #EXTINF:-1 tvg-id="FUELTV.pt" tvg-name="FUEL TV" tvg-logo="https://i.imgur.com/I8mviBy.png" tvg-language="English" group-title="Sports",FUEL TV [1080p] (PT - English)
 https://amg01074-fueltv-fueltvau-samsungau-g09kq.amagi.tv/playlist/amg01074-fueltv-fueltvau-samsungau/playlist.m3u8
@@ -10460,6 +10500,8 @@ https://jmp2.uk/plu-5de94dacb394a300099fa22a.m3u8
 https://pb-783hpus5r91wv.akamaized.net/playlist.m3u8
 #EXTINF:-1 tvg-id="PGATour.us@Sports#7" tvg-name="PGA Tour" tvg-logo="https://i.imgur.com/J0TY9dG.png" tvg-language="English" group-title="Sports",PGA Tour [720p] (US - English)
 https://aegis-cloudfront-1.tubi.video/9c59800e-fa9a-4539-b8e5-5769918e7c5a/playlist.m3u8
+#EXTINF:-1 tvg-id="PickleballNow.in" tvg-name="Pickleball Now" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Pickleball_Now.png" tvg-language="English" group-title="Sports",Pickleball Now [720p] (IN - English)
+https://distro-timesgroup.vgcdn.net/vglive-sk-843549/playlist.m3u8
 #EXTINF:-1 tvg-id="PlutoTVCompetition.us" tvg-name="Pluto TV Competition" tvg-logo="https://images.pluto.tv/channels/603fde9026ecbf0007752c2c/colorLogoPNG.png" tvg-language="English" group-title="Sports",Pluto TV Competition (US - English)
 https://jmp2.uk/plu-603fde9026ecbf0007752c2c.m3u8
 #EXTINF:-1 tvg-id="PlutoTVHandbollHighlights.se" tvg-name="Pluto TV Handboll Highlights" tvg-logo="https://images.pluto.tv/channels/68dfa3e2cc3c6cd904052c41/colorLogoPNG_1761838923264.png" tvg-language="English,Swedish" group-title="Sports",Pluto TV Handboll Highlights (SE - English, Swedish)
@@ -10712,6 +10754,8 @@ https://tracesportstars-klowdtv.amagi.tv/playlist.m3u8
 #EXTINF:-1 tvg-id="TraceSportStars.fr@Sports#6" tvg-name="Trace Sport Stars" tvg-logo="https://i.imgur.com/FabFP5A.png" tvg-language="English,French" group-title="Sports",Trace Sport Stars [1080p] (FR - English, French)
 https://amg01131-tracetv-amg01131c2-stirr-us-4392.playouts.now.amagi.tv/playlist.m3u8
 #EXTINF:-1 tvg-id="TraceSportStars.fr@Sports#7" tvg-name="Trace Sport Stars" tvg-logo="https://i.imgur.com/FabFP5A.png" tvg-language="English" group-title="Sports",Trace Sport Stars (FR - English)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36
+#EXTVLCOPT:http-referrer=https://trace.plus
 https://channels.trace.plus/Traceprod/TRACE_SPORT_STARS_sd/index.m3u8
 #EXTINF:-1 tvg-id="TSNTheOcho.ca" tvg-name="TSN The Ocho" tvg-logo="https://tvpnlogopus.samsungcloud.tv/platform/image/sourcelogo/vc/00/02/34/CA1400003R3_20240709T002034SQUARE.png" tvg-language="English" group-title="Sports",TSN The Ocho [1080p] (CA - English)
 https://d3pnbvng3bx2nj.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-rds8g35qfqrnv/TSN_The_Ocho.m3u8
@@ -11196,6 +11240,8 @@ https://ds25p79iq4576.cloudfront.net/master.m3u8
 https://jmp2.uk/plu-654932fa4d6d8f00084c4723.m3u8
 #EXTINF:-1 tvg-id="BadGirlsClub@Uncategorized" tvg-name="Bad Girls Club" tvg-language="English" group-title="Uncategorized",Bad Girls Club [1080p] (Global - English)
 https://xumo-xumoent-vc-118-jed5p.fast.nbcuni.com/live/master.m3u8
+#EXTINF:-1 tvg-id="BakuTV" tvg-name="Baku TV" tvg-language="English" group-title="Uncategorized",Baku TV [1080p] (Global - English)
+https://rtmp.baku.tv/hls/bakutv_1080p.m3u8
 #EXTINF:-1 tvg-id="BangBangTV" tvg-name="Bang Bang TV" tvg-language="English" group-title="Uncategorized",Bang Bang TV [1080p] (Global - English)
 https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/6a98fce2-bf4c-4bfb-91f4-c43851bb3801/manifest.m3u8
 #EXTINF:-1 tvg-id="BarbieFriends" tvg-name="Barbie & Friends" tvg-language="English" group-title="Uncategorized",Barbie & Friends (Global - English)
@@ -13460,6 +13506,8 @@ https://aegis-cloudfront-1.tubi.video/185b9f38-635d-4cd8-b744-0ffca8ed48ba/pllne
 https://jmp2.uk/plu-662a6309307fa30008196b4e.m3u8
 #EXTINF:-1 tvg-id="PlusTLT.bo" tvg-name="Plus TLT" tvg-language="English" group-title="Uncategorized",Plus TLT [720p] (BO - English)
 http://15.204.246.24:8080/PlusTLTHD/index.m3u8
+#EXTINF:-1 tvg-id="PlusTLT.bo@Uncategorized" tvg-name="Plus TLT" tvg-language="English" group-title="Uncategorized",Plus TLT [720p] (BO - English)
+http://190.181.61.93:8000/play/a007/index.m3u8
 #EXTINF:-1 tvg-id="PlusTVAfrica.ng" tvg-name="Plus TV Africa" tvg-logo="https://i.imgur.com/6RT3yao.png" tvg-language="English" group-title="Uncategorized",Plus TV Africa [720p] (NG - English)
 https://5c0740dba62b3.streamlock.net/plustv/myStream/playlist.m3u8
 #EXTINF:-1 tvg-id="PlutoTV80sAction" tvg-name="Pluto TV 80's Action" tvg-language="English" group-title="Uncategorized",Pluto TV 80's Action (Global - English)
@@ -14104,9 +14152,6 @@ https://jmp2.uk/plu-69b01641a9b840a456a11c18.m3u8
 https://jmp2.uk/plu-69b968a58323ef2714d1aa36.m3u8
 #EXTINF:-1 tvg-id="SciFi.pl" tvg-name="Sci Fi" tvg-logo="https://i.imgur.com/QEqai8a.png" tvg-language="English" group-title="Uncategorized",Sci Fi [1080p] (PL - English)
 http://92.114.85.87:8003/play/a007/index.m3u8
-#EXTINF:-1 tvg-id="SciFi.rs" tvg-name="Sci Fi" tvg-logo="https://i.imgur.com/FPumwfg.png" tvg-language="Serbian,English" group-title="Uncategorized",Sci Fi [720p] (RS - Serbian, English)
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36
-https://webtvstream.bhtelecom.ba/sci-fi.m3u8
 #EXTINF:-1 tvg-id="SciFiWorld" tvg-name="Sci-Fi World" tvg-language="English" group-title="Uncategorized",Sci-Fi World [1080p] (Global - English)
 https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/a985e052-6868-4365-ac45-52afe9008b25/manifest.m3u8
 #EXTINF:-1 tvg-id="ScientologyNetwork.us" tvg-name="Scientology Network" tvg-logo="https://i.imgur.com/HFmkjiR.png" tvg-language="English" group-title="Uncategorized",Scientology Network [1080p] (US - English)
